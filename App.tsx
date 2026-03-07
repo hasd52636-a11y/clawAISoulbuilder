@@ -14,6 +14,7 @@ import { getCurrentUser } from './utils/auth';
 import { CelebritySoulsGrid } from './components/CelebritySoulsGrid';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import { Analytics } from '@vercel/analytics/react';
 
 // AI Soul Weaver Logo - 灵魂铸造师 Logo
 const SoulWeaverLogo = ({ className }: { className?: string }) => (
@@ -2389,6 +2390,7 @@ Stores short-term memory and active variables.`);
           </div>
         </>
       )}
+      <Analytics />
     </div>
   );
 }
