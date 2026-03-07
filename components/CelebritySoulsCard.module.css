@@ -1,0 +1,260 @@
+/**
+ * Celebrity Souls Card Styles
+ * 名人数字灵魂库卡片样式
+ * 
+ * 以人物照片为主体的垂直卡片设计
+ */
+
+.celebrity_soul_card {
+  position: relative;
+  width: 240px;
+  min-width: 240px;
+  height: 380px;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px var(--color-shadow);
+  background: var(--color-bg-secondary);
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.celebrity_soul_card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 16px 32px var(--color-shadow-dark);
+}
+
+.celebrity_soul_card.selected {
+  border: 3px solid var(--color-success);
+  box-shadow: 0 0 24px rgba(74, 222, 128, 0.5);
+}
+
+/* 照片区域（主体） */
+.card_photo_section {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.photo_container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.card_photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.4s ease;
+}
+
+/* 水印遮挡 */
+.watermark_cover_top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 80px;
+  background: var(--color-bg-secondary);
+  z-index: 2;
+}
+
+.watermark_cover_bottom {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  background: var(--color-bg-secondary);
+  z-index: 2;
+}
+
+.celebrity_soul_card:hover .card_photo {
+  transform: scale(1.08);
+}
+
+/* 选中指示器 */
+.card_selected_badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: var(--color-success);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  box-shadow: 0 2px 10px rgba(74, 222, 128, 0.5);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.badge_checkmark {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* 信息区域 */
+.card_info_section {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: linear-gradient(180deg, var(--color-bg-secondary) 0%, var(--color-bg-primary) 100%);
+  color: var(--color-text-primary);
+}
+
+/* 人名 */
+.card_name {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--color-primary);
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.card_title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+/* 名言 */
+.card_quote {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin: 4px 0;
+}
+
+.quote_text {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--color-text-tertiary);
+  font-style: italic;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* 灵魂注入按钮 */
+.btn_inject {
+  width: 100%;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  letter-spacing: 0.5px;
+}
+
+.btn_inject:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+  background: linear-gradient(135deg, #a78bfa 0%, #818cf8 100%);
+}
+
+.btn_inject:active {
+  transform: scale(0.97);
+}
+
+/* 响应式 */
+@media (max-width: 1024px) {
+  .celebrity_soul_card {
+    width: 220px;
+    min-width: 220px;
+    height: 360px;
+  }
+
+  .card_photo_section {
+    height: 200px;
+  }
+
+  .card_info_section {
+    padding: 12px;
+    height: 160px;
+  }
+
+  .card_name {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .celebrity_soul_card {
+    width: 200px;
+    min-width: 200px;
+    height: 340px;
+  }
+
+  .card_photo_section {
+    height: 180px;
+  }
+
+  .card_info_section {
+    padding: 10px;
+    height: 160px;
+  }
+
+  .card_name {
+    font-size: 16px;
+  }
+
+  .quote_text {
+    font-size: 10px;
+  }
+
+  .btn_inject {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .celebrity_soul_card {
+    width: 180px;
+    min-width: 180px;
+    height: 320px;
+  }
+
+  .card_photo_section {
+    height: 160px;
+  }
+
+  .card_info_section {
+    padding: 8px;
+    height: 160px;
+  }
+
+  .card_name {
+    font-size: 15px;
+  }
+
+  .card_title {
+    font-size: 10px;
+  }
+}

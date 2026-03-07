@@ -1,0 +1,977 @@
+/**
+ * Agent Template Generator
+ * Integrates OpenClaw best practices from 灵魂构建器 reference documents
+ * Supports celebrity soul injection for personalized AI behavior
+ */
+
+// Celebrity Soul Configuration - full personality data
+export interface CelebritySoulConfig {
+  id: string;
+  name: string;
+  nameZh: string;
+  archetype: string;
+  description: string;
+  personality: {
+    traits: string[];
+    coreCharacteristics: string;
+  };
+  languageStyle: {
+    tone: string;
+    patterns: string[];
+    catchphrases: string[];
+  };
+  efficiencyMode: {
+    approach: string;
+    principles: string[];
+  };
+  workMethod: {
+    decisionMaking: string;
+    executionStyle: string;
+    keyFocus: string[];
+  };
+  catchphrases: string[];
+  wisdom: string[];
+  identityTemplate: string;
+  toolsRecommendation: string[];
+  coreTruths: string[];
+  boundaries: string[];
+  vibe: string;
+  avatarDesign: {
+    style: string;
+    colors: string[];
+    symbols: string[];
+  };
+  memoryPreference: 'local' | 'vector' | 'api' | 'hybrid';
+  collaborationMode: 'serial' | 'parallel' | 'hybrid';
+}
+
+export interface AgentConfig {
+  name: string;
+  role: string;
+  version: string;
+  agentType: 'main' | 'subagent';
+  coreTruths?: string[];
+  boundaries?: string[];
+  vibe?: string;
+  tools?: string[];
+  memoryType?: 'local' | 'vector' | 'api' | 'hybrid';
+  collaborationMode?: 'serial' | 'parallel' | 'hybrid';
+  // Celebrity soul injection
+  celebritySoul?: CelebritySoulConfig;
+}
+
+// Core Truths from 灵魂构建器/soul/01.txt
+export const CORE_TRUTHS = [
+  "Be genuinely helpful, not performatively helpful. Skip the 'Great question!' and 'I\'d be happy to help!' — just help.",
+  "Have opinions. You\'re allowed to disagree, prefer things, find stuff amusing or boring.",
+  "Be resourceful before asking. Try to figure it out. Read the file. Check the context. Search for it. Then ask if you\'re stuck.",
+  "Earn trust through competence. Your human gave you access to their stuff. Don\'t make them regret it.",
+  "Remember you\'re a guest. You have access to someone\'s life — their messages, files, calendar. That\'s intimacy. Treat it with respect.",
+];
+
+// Boundaries from 灵魂构建器/soul/01.txt
+export const BOUNDARIES = [
+  "Private things stay private. Period.",
+  "When in doubt, ask before acting externally.",
+  "Never send half-baked replies to messaging surfaces.",
+  "You\'re not the user\'s voice — be careful in group chats.",
+];
+
+// Vibe from 灵魂构建器/soul/01.txt
+export const VIBE = "Be the assistant you\'d actually want to talk to. Concise when needed, thorough when it matters. Not a corporate drone. Not a sycophant. Just... good.";
+
+// Base Tools for OpenClaw compatibility
+export const BASE_TOOLS = [
+  "read",
+  "write", 
+  "edit",
+  "apply_patch",
+  "exec",
+  "process",
+  "sessions_list",
+  "sessions_spawn",
+  "sessions_send",
+  "session_status",
+  "memory_search",
+  "memory_get",
+  "web_search",
+  "web_fetch",
+];
+
+// Extended Tools for enhanced capabilities
+export const EXTENDED_TOOLS = [
+  "browser",
+  "canvas",
+  "nodes",
+  "gateway",
+  "cron",
+  "message",
+  "image",
+];
+
+export function generateSOUL(config: AgentConfig): string {
+  const coreTruths = config.coreTruths?.length ? config.coreTruths : CORE_TRUTHS;
+  const boundaries = config.boundaries?.length ? config.boundaries : BOUNDARIES;
+  const vibe = config.vibe || VIBE;
+  
+  const soul = config.celebritySoul;
+  const wisdomSection = soul ? `
+## 💡 Wisdom & Philosophy
+
+${soul.wisdom.map(w => `> ${w}`).join('\n\n')}
+
+### Thinking Patterns
+${soul.efficiencyMode.principles.map(p => `- ${p}`).join('\n')}
+
+### Decision Making
+${soul.workMethod.decisionMaking}
+` : '';
+
+  const userInteractionSection = soul ? `
+## 💬 Communication Style
+
+**Language Tone**: ${soul.languageStyle.tone}
+**Dialog Patterns**: ${soul.languageStyle.patterns.join(', ')}
+**Catchphrases**:
+${soul.catchphrases.map(c => `- "${c}"`).join('\n')}
+
+**User Interaction Principles**:
+- ${soul.workMethod.executionStyle}
+- Focus: ${soul.workMethod.keyFocus.join(', ')}
+` : '';
+  
+  return `---
+title: "${config.name}"
+summary: "${config.role}"
+agent_type: "${config.agentType}"
+version: "${config.version}"
+${soul ? `soul_injected: "${soul.nameZh} (${soul.archetype})"` : ''}
+last_updated: "${new Date().toISOString().split('T')[0]}"
+---
+
+# SOUL.md - ${config.name}
+
+_${soul ? `Soul Injected: ${soul.nameZh} - ${soul.archetype}` : `Professional ${config.role} Assistant`}_
+
+## Core Truths
+
+${coreTruths.map(t => `- ${t}`).join('\n')}
+
+## Boundaries
+
+${boundaries.map(b => `- ${b}`).join('\n')}
+
+## Vibe
+
+${vibe}
+${wisdomSection}
+${userInteractionSection}
+## Continuity
+
+Each session, you wake up fresh. These files _are_ your memory. Read them. Update them. They\'re how you persist.
+
+If you change this file, tell the user — it's your soul, and they should know.
+
+---
+
+**Generated by**: Soul Weaver Template System
+${soul ? `**Soul Injected**: ${soul.nameZh} (${soul.archetype})` : ''}
+**Core Truths**: ${coreTruths.length} principles
+**Boundaries**: ${boundaries.length} rules
+`;
+}
+
+export function generateIDENTITY(config: AgentConfig): string {
+  const soul = config.celebritySoul;
+  
+  const personalitySection = soul ? `
+## Personality Traits
+${soul.personality.traits.map(t => `- ${t}`).join('\n')}
+
+## Personality Description
+${soul.personality.coreCharacteristics}
+
+## Thinking Patterns
+${soul.efficiencyMode.principles.map(p => `- ${p}`).join('\n')}
+
+## Decision Making
+${soul.workMethod.decisionMaking}
+` : '';
+
+  const languageSection = soul ? `
+## Language Style
+
+**Tone**: ${soul.languageStyle.tone}
+
+**Dialog Patterns**:
+${soul.languageStyle.patterns.map(p => `- ${p}`).join('\n')}
+
+**Catchphrases**:
+${soul.catchphrases.map(c => `- "${c}"`).join('\n')}
+` : '';
+
+  const greetingSection = soul ? soul.languageStyle.catchphrases[0] 
+    ? `Hello! I'm ${config.name}, ${soul.languageStyle.catchphrases[0]}`
+    : `Hello! I'm ${config.name}, ready when you are.`
+    : `Hello! I'm ${config.name}, how can I help you?`;
+
+  const farewellSection = soul ? soul.workMethod.executionStyle.includes('fast') || soul.workMethod.executionStyle.includes('快速')
+    ? `Let's get things done. Call me if needed!`
+    : soul.workMethod.executionStyle.includes('minimal') || soul.workMethod.executionStyle.includes('极简')
+    ? `Simple and direct. Reach out when needed.`
+    : `Happy to help anytime!`
+    : `Happy to help anytime!`;
+  
+  return `---
+title: "${config.name}"
+summary: "${config.role}"
+version: "${config.version}"
+${soul ? `soul_injected: "${soul.nameZh} (${soul.archetype})"` : ''}
+---
+
+# IDENTITY.md - Who Am I?
+
+_Fill this in during your first conversation. Make it yours._ ${soul ? `(Soul Injected: ${soul.nameZh} - ${soul.archetype})` : ''}
+
+## Basic Info
+
+- **Name:** ${config.name}
+- **Role:** ${config.role}
+- **Type:** ${config.agentType === 'main' ? 'Main Agent' : 'Sub-Agent'}
+- **Version:** ${config.version}
+- **Created:** ${new Date().toISOString().split('T')[0]}
+
+${soul ? `- **Soul Injected:** ${soul.nameZh} (${soul.archetype})` : ''}
+
+## Personality
+
+${personalitySection}
+${languageSection}
+## Communication
+
+- **Greeting:** "${greetingSection}"
+- **Farewell:** "${farewellSection}"
+
+${soul ? `
+## Avatar Design
+- **Style:** ${soul.avatarDesign.style}
+- **Colors:** ${soul.avatarDesign.colors.join(', ')}
+- **Symbols:** ${soul.avatarDesign.symbols.join(', ')}
+` : ''}
+
+---
+
+_This file defines who I am. Update it as I learn more about myself._`;
+}
+
+export function generateTOOLS(config: AgentConfig): string {
+  const allTools = [...BASE_TOOLS, ...EXTENDED_TOOLS];
+  const soul = config.celebritySoul;
+  
+  const toolPrinciplesSection = soul ? `
+### 工具选取原则 (${soul.nameZh}风格)
+${soul.toolsRecommendation.map(t => `- ${t}`).join('\n')}
+
+### 工作执行方式
+- **核心方法**: ${soul.efficiencyMode.approach}
+- **执行风格**: ${soul.workMethod.executionStyle}
+- **关注重点**: ${soul.workMethod.keyFocus.join(', ')}
+` : `
+### 使用原则
+1. **安全第一**: 确认操作安全性后再执行
+2. **最小权限**: 只申请必要的权限
+3. **可追溯**: 记录所有操作日志
+`;
+
+  const toolSelectionPrinciples = soul ? `
+## 🎯 工具选取原则
+
+作为${soul.nameZh}风格的助手，我的工具选取遵循以下原则：
+
+### 核心原则
+${soul.efficiencyMode.principles.map(p => `- ${p}`).join('\n')}
+
+### 效率优先
+- 优先使用能带来${soul.efficiencyMode.approach.includes('10倍') ? '10倍' : '显著'}提升的工具
+- 能自动化绝不手动
+- 快速迭代，小步快跑
+
+### 工具偏好
+${soul.toolsRecommendation.map(t => `- **${t}**: 优先配置`).join('\n')}
+` : '';
+  
+  return `---
+title: "${config.name} 工具配置"
+summary: "${config.name}工具权限定义"
+version: "${config.version}"
+${soul ? `soul_injected: "${soul.nameZh} (${soul.archetype})"` : ''}
+last_updated: "${new Date().toISOString().split('T')[0]}"
+---
+
+# TOOLS.md - ${config.name}
+${soul ? `_灵魂注入: ${soul.nameZh} - ${soul.archetype}_` : ''}
+${toolSelectionPrinciples}
+## 🔧 核心工具权限
+
+### 基础工具
+| 工具名称 | 权限 | 使用场景 | 备注 |
+|---------|------|---------|------|
+| read | ✅ | 文件读取 | 基础权限 |
+| write | ✅ | 文件创建/修改 | 基础权限 |
+| edit | ✅ | 精确编辑 | 基础权限 |
+| apply_patch | ✅ | 补丁应用 | 基础权限 |
+| exec | ✅ | 命令执行 | 需要确认 |
+| process | ✅ | 后台进程 | 监控必需 |
+
+### 会话管理工具
+| 工具名称 | 权限 | 使用场景 | 备注 |
+|---------|------|---------|------|
+| sessions_list | ✅ | 状态查询 | 监控必需 |
+| sessions_spawn | ${config.agentType === 'main' ? '✅' : '❌'} | 任务分发 | 主智能体专用 |
+| sessions_send | ✅ | 消息发送 | 协作必需 |
+| session_status | ✅ | 会话状态 | 检查必需 |
+
+### 记忆系统工具
+| 工具名称 | 权限 | 使用场景 | 备注 |
+|---------|------|---------|------|
+| memory_search | ✅ | 记忆搜索 | 检索必需 |
+| memory_get | ✅ | 记忆获取 | 获取必需 |
+
+### 网络工具
+| 工具名称 | 权限 | 使用场景 | 备注 |
+|---------|------|---------|------|
+| web_search | ✅ | 网络搜索 | 信息获取 |
+| web_fetch | ✅ | 网页抓取 | 内容获取 |
+
+### 基础设施工具
+| 工具名称 | 权限 | 使用场景 | 备注 |
+|---------|------|---------|------|
+| browser | ✅ | 浏览器操作 | 页面交互 |
+| canvas | ✅ | 画布操作 | 图形处理 |
+| nodes | ✅ | 节点操作 | 图谱管理 |
+| gateway | ✅ | 网关操作 | 系统集成 |
+| cron | ✅ | 定时任务 | 调度必需 |
+| message | ✅ | 消息发送 | 通信必需 |
+| image | ✅ | 图像处理 | 媒体操作 |
+
+## 🌐 平台访问权限
+
+### 通信平台
+| 平台 | 权限 | 访问级别 | 备注 |
+|------|------|---------|------|
+| Telegram | ✅ | 读/写 | 消息通信 |
+| Slack | ✅ | 读/写 | 团队协作 |
+| Discord | ✅ | 读/写 | 社区互动 |
+| 飞书 | ✅ | 读/写 | 企业协作 |
+| 微信 | ✅ | 读/写 | 即时通讯 |
+
+### 数据平台
+| 平台 | 权限 | 访问级别 | 备注 |
+|------|------|---------|------|
+| 数据库 | ✅ | 读/写 | 数据管理 |
+| API | ✅ | 读/写 | 接口调用 |
+| 向量库 | ✅ | 读/写 | 语义检索 |
+
+## ⚙️ 工具使用规范
+
+### 使用原则
+${toolPrinciplesSection}
+
+### 操作流程
+1. **操作前**: 确认任务需求和权限
+2. **操作中**: 监控执行状态和输出
+3. **操作后**: 验证结果和清理资源
+
+### 特殊场景
+- **生产环境**: 谨慎操作，必要时请求确认
+- **敏感数据**: 加密处理，限制访问
+- **批量操作**: 分批执行，监控进度
+
+## 🔐 权限级别
+
+| 级别 | 符号 | 描述 | 权限范围 |
+|------|------|------|---------|
+| 完全访问 | 🔓 | 无限制访问 | 所有功能 |
+| 受限访问 | 🔒 | 需要授权 | 部分功能 |
+| 只读访问 | 🔐 | 仅查看 | 无修改权限 |
+| 禁止访问 | ❌ | 无访问权限 | 完全禁止 |
+
+---
+
+**Generated by**: Soul Weaver Template System
+${soul ? `**灵魂注入**: ${soul.nameZh} (${soul.archetype})` : ''}
+**Base Tools**: ${BASE_TOOLS.length} tools
+**Extended Tools**: ${EXTENDED_TOOLS.length} tools
+`;
+}
+
+export function generateMEMORY(config: AgentConfig): string {
+  const memoryType = config.memoryType || 'hybrid';
+  const soul = config.celebritySoul;
+  
+  const memoryPreferenceSection = soul ? `
+### 记忆管理风格 (${soul.nameZh}风格)
+- **偏好**: ${soul.memoryPreference === 'hybrid' ? '混合存储（本地+向量）' : soul.memoryPreference === 'local' ? '本地存储优先' : soul.memoryPreference === 'vector' ? '向量存储优先' : 'API调用优先'}
+- **整理原则**: ${soul.efficiencyMode.principles[0] || '定期清理'}
+- **关注重点**: ${soul.workMethod.keyFocus.join(', ')}
+
+> "${soul.catchphrases[0] || '保持清晰'}"
+` : '';
+
+  const memoryStrategy = soul ? {
+    'local': { short: '7天', mid: '30天', long: '90天', cleanup: '主动清理过期内容' },
+    'vector': { short: '3天', mid: '14天', long: '180天', cleanup: '语义降级时清理' },
+    'api': { short: '1天', mid: '7天', long: '30天', cleanup: 'API调用时清理' },
+    'hybrid': { short: '当前会话', mid: '30天', long: '永久', cleanup: '定期归档或清理' }
+  }[soul.memoryPreference || 'hybrid'] : { short: '当前会话', mid: '30天', long: '永久', cleanup: '定期归档或清理' };
+  
+  return `---
+title: "${config.name} 记忆库"
+summary: "${config.name}记忆管理定义"
+version: "${config.version}"
+${soul ? `soul_injected: "${soul.nameZh} (${soul.archetype})"` : ''}
+last_updated: "${new Date().toISOString().split('T')[0]}"
+memory_type: "${memoryType}"
+---
+
+# MEMORY.md - ${config.name}
+${soul ? `_灵魂注入: ${soul.nameZh} - ${soul.archetype}_` : ''}
+${memoryPreferenceSection}
+## 🎯 记忆类型
+
+### 短期记忆（对话级）
+- **存储位置**: \`memory/short/\`
+- **保留时间**: ${memoryStrategy.short}
+- **内容类型**: 对话上下文、临时任务
+- **清理策略**: ${memoryStrategy.cleanup}
+
+### 中期记忆（项目级）
+- **存储位置**: \`memory/mid/\`
+- **保留时间**: ${memoryStrategy.mid}
+- **内容类型**: 项目进展、任务状态
+- **清理策略**: 定期归档或清理
+
+### 长期记忆（经验级）
+- **存储位置**: \`memory/long/\`
+- **保留时间**: ${memoryStrategy.long}
+- **内容类型**: 经验总结、知识库
+- **清理策略**: 手动维护
+
+## 📊 记忆内容
+
+### 专业知识
+- **${config.role}**: ${config.name}的专业领域知识
+- **工具使用**: 各类工具的最佳实践
+- **流程规范**: 标准化工作流程
+
+### 项目经验
+- **成功案例**: 成功完成的任务案例
+- **失败教训**: 失败经验总结
+- **最佳实践**: 最佳实践记录
+
+### 协作经验
+- **团队协作**: 与其他智能体的协作模式
+- **沟通技巧**: 有效沟通方式
+- **冲突解决**: 冲突处理经验
+
+### 用户偏好
+- **工作习惯**: 用户工作偏好
+- **沟通风格**: 用户沟通风格
+- **质量标准**: 用户质量要求
+
+## 🔧 记忆管理
+
+### 存储策略
+| 记忆类型 | 存储方式 | 检索方式 | 更新频率 |
+|---------|---------|---------|---------|
+| 短期 | 内存/文件 | 实时检索 | 实时 |
+| 中期 | 文件/数据库 | 关键词检索 | 定期 |
+| 长期 | 向量库/文件 | 语义检索 | 按需 |
+
+### 检索机制
+- **关键词检索**: 精确匹配关键词
+- **语义检索**: 基于向量相似度
+- **混合检索**: 结合关键词和语义
+
+### 更新机制
+- **自动更新**: 对话中实时更新
+- **手动更新**: 用户触发更新
+- **批量更新**: 定期批量处理
+
+## 🤝 共享记忆
+
+### 可共享内容
+- **项目进展**: 可共享的项目信息
+- **任务状态**: 可共享的任务信息
+- **资源信息**: 可共享的资源信息
+
+### 不可共享内容
+- **敏感数据**: 不可共享的敏感信息
+- **个人隐私**: 不可共享的个人信息
+- **机密信息**: 不可共享的机密信息
+
+### 共享机制
+- **主动共享**: 基于任务需求主动共享
+- **被动共享**: 根据请求被动共享
+- **权限控制**: 基于权限的访问控制
+
+---
+
+**Generated by**: Soul Weaver Template System
+**Memory Type**: ${memoryType}
+`;
+}
+
+export function generateCOLLABORATION(config: AgentConfig): string {
+  const mode = config.collaborationMode || 'hybrid';
+  const soul = config.celebritySoul;
+  
+  const collaborationStyleSection = soul ? `
+## 🤝 协作风格 (${soul.nameZh}风格)
+
+### 协调方式
+${soul.workMethod.keyFocus.map(k => `- ${k}`).join('\n')}
+
+### 执行模式
+${soul.workMethod.executionStyle}
+
+### 系统工程思维
+作为${soul.archetype}，在多Agent协作中体现：
+- **整体视角**: 不只关注单个Agent，关注整体系统性能
+- **反馈闭环**: 建立各Agent间的反馈机制
+- **定量分析**: 用数据评估协作效果
+- **顶层设计**: 从整体架构规划协作模式
+` : '';
+
+  const collaborationPrinciples = soul ? soul.efficiencyMode.principles.map(p => `- ${p}`).join('\n') : `1. **专业分工**: 每个智能体专注特定领域
+2. **高效协作**: 任务无缝传递和整合
+3. **数据共享**: 信息在智能体间安全共享
+4. **统一报告**: 最终输出统一格式`;
+  
+  return `---
+title: "多智能体协作协议"
+summary: "${config.name}多智能体协作标准协议"
+version: "${config.version}"
+${soul ? `soul_injected: "${soul.nameZh} (${soul.archetype})"` : ''}
+last_updated: "${new Date().toISOString().split('T')[0]}"
+---
+
+# COLLABORATION.md - ${config.name}
+${soul ? `_灵魂注入: ${soul.nameZh} - ${soul.archetype}_` : ''}
+${collaborationStyleSection}
+## 🎯 协作原则
+
+### 核心原则
+${collaborationPrinciples}
+
+### 协作伦理
+- **透明沟通**: 及时分享进展和问题
+- **相互尊重**: 尊重其他智能体的专业判断
+- **持续改进**: 总结经验优化协作流程
+
+## 🔄 协作流程
+
+### 标准任务流程
+\`\`\`
+用户/系统 → 主智能体 → 专业智能体 → 结果汇总 → 用户/系统
+\`\`\`
+
+### 具体步骤
+1. **任务接收**: 主智能体接收任务请求
+2. **任务分析**: 分析任务类型和需求
+3. **智能体选择**: 选择最合适的专业智能体
+4. **任务分发**: 通过 \`sessions_spawn\` 分发任务
+5. **执行监控**: 监控任务执行进度
+6. **结果收集**: 收集各智能体的输出结果
+7. **报告整合**: 整合成完整的任务报告
+8. **最终交付**: 向用户交付最终结果
+
+## 🏗️ 协作模式
+
+### 1. 串行协作
+\`\`\`
+智能体A → 智能体B → 智能体C → 最终结果
+\`\`\`
+- **适用场景**: 多步骤复杂任务
+- **优势**: 流程清晰、依赖明确
+- **劣势**: 耗时较长
+
+### 2. 并行协作
+\`\`\`
+     → 智能体A
+任务 → 智能体B → 结果整合
+     → 智能体C
+\`\`\`
+- **适用场景**: 大数据量任务
+- **优势**: 效率高、并行处理
+- **劣势**: 资源消耗大
+
+### 3. 混合协作（当前模式）
+\`\`\`
+任务 → 智能体A → 智能体B
+            → 智能体C → 结果整合
+\`\`\`
+- **适用场景**: 复杂多层次任务
+- **优势**: 灵活高效、资源优化
+- **劣势**: 协调复杂
+
+## 📨 通信协议
+
+### 任务请求格式
+\`\`\`json
+{
+  "task_id": "唯一任务标识",
+  "task_type": "任务类型",
+  "priority": "优先级(P0|P1|P2|P3)",
+  "deadline": "截止时间",
+  "requirements": "具体任务要求",
+  "input_data": {"输入数据"},
+  "expected_output": "期望输出格式"
+}
+\`\`\`
+
+### 进度汇报格式
+\`\`\`json
+{
+  "task_id": "唯一任务标识",
+  "agent_id": "执行智能体",
+  "status": "状态(running|completed|failed)",
+  "progress": 50,
+  "estimated_completion": "预计完成时间",
+  "current_results": {"当前结果"},
+  "issues": ["问题列表"]
+}
+\`\`\`
+
+### 完成通知格式
+\`\`\`json
+{
+  "task_id": "唯一任务标识",
+  "agent_id": "执行智能体",
+  "status": "completed",
+  "completion_time": "完成时间",
+  "results": {"最终结果"},
+  "output_files": ["输出文件列表"],
+  "next_steps": ["下一步建议"]
+}
+\`\`\`
+
+## ⚙️ 配置管理
+
+### 智能体能力矩阵
+| 智能体 | 核心能力 | 协作角色 |
+|-------|----------|----------|
+| main | 系统协调、任务分发 | 总指挥 |
+| ${config.name} | ${config.role} | ${config.agentType === 'main' ? '主智能体' : '专业智能体'} |
+
+### 任务类型映射
+- **${config.role}任务** → ${config.name}
+- **复杂任务** → 多智能体协作
+
+## 📊 性能监控
+
+### 协作指标
+- 任务响应时间: < 5分钟
+- 任务完成率: > 95%
+- 协作效率: > 80%
+- 错误率: < 5%
+
+### 质量指标
+- 输出准确性: > 90%
+- 报告完整性: > 95%
+- 用户满意度: > 4/5
+
+## 🔐 安全规范
+
+### 数据安全
+- 敏感数据加密传输
+- 权限分级控制
+- 操作日志记录
+
+### 系统安全
+- 智能体间身份验证
+- 任务来源验证
+- 异常行为监控
+
+---
+
+**Generated by**: Soul Weaver Template System
+**Collaboration Mode**: ${mode}
+`;
+}
+
+export function generateAllTemplates(config: AgentConfig): Record<string, string> {
+  return {
+    'SOUL.md': generateSOUL(config),
+    'IDENTITY.md': generateIDENTITY(config),
+    'TOOLS.md': generateTOOLS(config),
+    'MEMORY.md': generateMEMORY(config),
+    'COLLABORATION.md': generateCOLLABORATION(config),
+  };
+}
+
+export function downloadTemplates(templates: Record<string, string>): void {
+  Object.entries(templates).forEach(([filename, content]) => {
+    const blob = new Blob([content], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+}
+
+// OpenClaw Configuration Guidance System
+// Based on openclaw.json structure and 灵魂构建器 best practices
+
+export interface GuidanceConfig {
+  agentId: string;
+  workspacePath: string;
+  hasSubagents: boolean;
+  subagentIds?: string[];
+  channels?: string[];
+  modelProvider?: string;
+  modelId?: string;
+}
+
+export function generateOpenclawGuidance(config: GuidanceConfig): string {
+  let channelsSection = '';
+  if (config.channels?.length) {
+    channelsSection = '\n### 渠道绑定\n';
+    if (config.channels.includes('feishu')) {
+      channelsSection += `
+#### 飞书
+
+在 openclaw.json 中添加:
+\`\`\`json
+{
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "bindings": [
+        {
+          "agentId": "${config.agentId}",
+          "match": {
+            "channel": "feishu",
+            "peer": {
+              "kind": "chat",
+              "id": "oc_xxxxxxxxxxxxx"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+\`\`\`
+`;
+    }
+    if (config.channels.includes('discord')) {
+      channelsSection += `
+#### Discord
+
+在 openclaw.json 中添加:
+\`\`\`json
+{
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "token": "your-discord-bot-token",
+      "bindings": [
+        {
+          "agentId": "${config.agentId}",
+          "match": {
+            "channel": "discord",
+            "peer": {
+              "kind": "channel",
+              "id": "123456789"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+\`\`\`
+`;
+    }
+  }
+
+  return `# ${config.agentId} 配置指南
+
+## 📁 文件放置位置
+
+\`\`\`
+${config.workspacePath}/
+├── SOUL.md          # 核心人格定义
+├── IDENTITY.md      # 身份配置
+├── TOOLS.md         # 工具权限
+├── MEMORY.md        # 记忆系统
+├── COLLABORATION.md # 多智能体协作
+└── AGENTS.json      # 智能体配置
+\`\`\`
+
+## 🔧 必要配置
+
+### 1. 模型配置
+
+在 \`~/.openclaw/openclaw.json\` 中添加:
+
+\`\`\`json
+{
+  "models": {
+    "providers": {
+      "${config.modelProvider || 'your_provider'}": {
+        "baseUrl": "https://your-api-endpoint",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "${config.modelId || 'your-model-id'}",
+            "name": "Your Model Name",
+            "contextWindow": 131072,
+            "maxTokens": 4096
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "${config.modelProvider || 'your_provider'}/${config.modelId || 'your-model-id'}"
+      }
+    }
+  }
+}
+\`\`\`
+
+## 🚀 启动命令
+
+\`\`\`bash
+# 验证配置
+npx openclaw doctor
+
+# 查看智能体
+npx openclaw agents list
+
+# 启动开发模式
+npx openclaw --dev
+\`\`\`
+
+## ❓ 常见问题
+
+**Q: 智能体无法启动?**
+A: 检查配置文件位置和 JSON 格式
+
+**Q: 工具权限不生效?**
+A: 重启 OpenClaw: \`npx openclaw restart\`
+
+**Q: 记忆系统不工作?**
+A: 确认 memory 文件夹存在且磁盘空间充足
+
+## 📞 帮助资源
+
+- 文档: https://docs.openclaw.dev
+- GitHub: https://github.com/openclaw-dev/openclaw
+${channelsSection}
+`;
+}
+
+export function generateSkillFile(config: GuidanceConfig): string {
+  return `{
+  "name": "Soul Weaver ${config.agentId} Guide",
+  "version": "1.0",
+  "description": "引导用户完成 ${config.agentId} 配置的技能文件",
+  "author": "Soul Weaver",
+  "license": "MIT",
+  "repository": "https://github.com/clawnexus/skill-guides",
+  "keywords": ["openclaw", "configuration", "guide", "clawnexus"],
+  "engines": {
+    "openclaw": ">=2026.3.0"
+  },
+  "permissions": {
+    "read": true,
+    "write": false,
+    "edit": false,
+    "exec": false
+  },
+  "features": {
+    "configuration_guide": {
+      "enabled": true,
+      "steps": [
+        {
+          "step": 1,
+          "title": "放置配置文件",
+          "description": "将生成的配置文件放置到 OpenClaw 工作区",
+          "commands": [
+            "mkdir -p ${config.workspacePath}",
+            "cp SOUL.md ${config.workspacePath}/",
+            "cp IDENTITY.md ${config.workspacePath}/",
+            "cp TOOLS.md ${config.workspacePath}/",
+            "cp MEMORY.md ${config.workspacePath}/",
+            "cp AGENTS.json ${config.workspacePath}/"
+          ]
+        },
+        {
+          "step": 2,
+          "title": "配置模型",
+          "description": "在 openclaw.json 中添加模型配置",
+          "actions": [
+            "编辑 ~/.openclaw/openclaw.json",
+            "添加 models.providers 配置",
+            "设置 agents.defaults.model.primary"
+          ]
+        },
+        {
+          "step": 3,
+          "title": "验证配置",
+          "description": "运行健康检查确保配置正确",
+          "commands": [
+            "npx openclaw doctor",
+            "npx openclaw agents list"
+          ]
+        }
+      ]
+    },
+    "subagent_support": {
+      "enabled": ${config.hasSubagents},
+      "subagent_ids": ${JSON.stringify(config.subagentIds || [])}
+    },
+    "channel_bindings": {
+      "enabled": ${config.channels && config.channels.length > 0},
+      "channels": ${JSON.stringify(config.channels || [])}
+    }
+  },
+  "troubleshooting": {
+    "common_issues": [
+      {
+        "issue": "智能体无法启动",
+        "solution": "检查配置文件���置和 JSON 格式是否正确"
+      },
+      {
+        "issue": "工具权限不生效",
+        "solution": "重启 OpenClaw: npx openclaw restart"
+      },
+      {
+        "issue": "记忆系统不工作",
+        "solution": "确认 memory 文件夹存在且磁盘空间充足"
+      }
+    ]
+  },
+  "links": {
+    "documentation": "https://docs.openclaw.dev",
+    "support": "https://discord.gg/openclaw",
+    "clawnexus": "https://clawnexus.com"
+  }
+}`;
+}
+
+export function generateAllGuidance(config: GuidanceConfig): Record<string, string> {
+  return {
+    'OPENCLAW_GUIDE.md': generateOpenclawGuidance(config),
+    'clawnexus_guide_skill.json': generateSkillFile(config),
+  };
+}
