@@ -55,7 +55,7 @@ const validateApiKey = (req: express.Request, res: express.Response, next: expre
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT || 3000;
 
   // Add request ID middleware
   app.use(requestIdMiddleware);
