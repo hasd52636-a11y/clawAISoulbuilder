@@ -1049,8 +1049,11 @@ export default function App() {
         Current conversation:
         ${historyText}
         
+        CRITICAL: You can ONLY ask UP TO 5 questions total. After 5 questions, you MUST set isComplete to true and generate the config.
+        Ask only the most essential questions. Keep it simple!
+        
         Extract the user's preferences from the conversation and generate the next question to ask the user.
-        If you have gathered enough information (at least AI name, user name, avatar style, skills, and tasks), set isComplete to true.
+        After gathering basic info (AI name, user name, skills), set isComplete to true to generate the config.
         Respond in the user's language (Language code: ${lang}).
         
         You MUST return ONLY a valid JSON object with the following structure:
@@ -1189,6 +1192,78 @@ export default function App() {
       )
     };
     setMessages(prev => [...prev, msg]);
+  };
+
+  // 快速生成配置 - 基于名人和用户输入
+  const handleQuickGenerate = async () => {
+    setIsCompiling(true);
+    setIsDemoMode(false);
+    setIsArchitectureReady(false);
+
+    try {
+      // 获取当前选择的名人
+      const selectedMaster = MASTERS.find(m => m.id === appliedMasters);
+      
+      // 确定机器名：如果选择了名人，用名人名字；否则用默认值
+      let aiName = prefs.aiName;
+      let userName = prefs.userName || `User${Math.floor(Math.random() * 10000)}`;
+      
+      if (selectedMaster) {
+        // 使用名人的名字作为AI名字
+        aiName = selectedMaster.nameZh || selectedMaster.name;
+        
+        // 添加名人的思维模式
+        const systemMsg: Message = {
+          id: Date.now().toString(),
+          role: 'system',
+          text: (
+            <div className="flex items-start gap-3">
+              <div className={`p-2 rounded-lg bg-gradient-to-br ${selectedMaster.color} border`}>
+                {selectedMaster.icon}
+              </div>
+              <div>
+                <p className="font-medium text-zinc-200">正在基于 {selectedMaster.name} 的思维模式生成配置...</p>
+              </div>
+            </div>
+          )
+        };
+        setMessages(prev => [...prev, systemMsg]);
+      }
+
+      // 更新prefs
+      setPrefs(p => ({
+        ...p,
+        aiName: aiName,
+        userName: userName,
+        // 如果没有输入，随机生成一些偏好
+        skills: p.skills.length > 0 ? p.skills : ['web_search', 'read', 'write', 'code'],
+        avatarStyle: p.avatarStyle || ['cyberpunk', 'minimalist', 'anime', 'realistic'][Math.floor(Math.random() * 4)],
+        multiAgent: p.multiAgent !== undefined ? p.multiAgent : Math.random() > 0.5,
+        memoryType: p.memoryType || (Math.random() > 0.5 ? 'both' : 'short'),
+        hardware: p.hardware || (Math.random() > 0.5 ? 'high' : 'standard')
+      }));
+
+      // 直接完成，跳过对话
+      setIsArchitectureReady(true);
+      
+      const finalMsg: Message = {
+        id: Date.now().toString(),
+        role: 'ai',
+        text: '',
+        type: 'final'
+      };
+      setMessages(prev => [...prev, finalMsg]);
+
+    } catch (error) {
+      console.error("Quick generate error:", error);
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: 'system',
+        text: t.errorMsg
+      }]);
+    } finally {
+      setIsCompiling(false);
+    }
   };
 
   const generateJsonContent = (p = displayPrefs, m = displayMasters) => {
@@ -1966,11 +2041,27 @@ Stores short-term memory and active variables.`);
               />
               <button 
                 onClick={handleSend}
-                disabled={!inputValue.trim() || isCompiling}
+                disabled={isCompiling}
                 className="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 transition-colors disabled:opacity-50 disabled:hover:bg-indigo-600 flex items-center gap-2"
               >
                 <span className="hidden sm:inline text-sm font-bold tracking-wider">{t.compile}</span>
                 <Send className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={() => {
+                  if (!isLoggedIn) {
+                    setShowLoginModal(true);
+                    return;
+                  }
+                  // 快速生成：基于已选名人和用户输入
+                  handleQuickGenerate();
+                }}
+                disabled={isCompiling}
+                className="p-2 bg-green-600 text-white rounded-lg hover:bg-green-500 transition-colors disabled:opacity-50 disabled:hover:bg-green-600 flex items-center gap-2"
+                title="快速生成配置"
+              >
+                <Zap className="w-4 h-4" />
+                <span className="hidden sm:inline text-sm font-bold tracking-wider">快速生成</span>
               </button>
             </div>
           </div>
