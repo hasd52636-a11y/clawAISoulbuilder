@@ -1040,6 +1040,18 @@ export default function App() {
     setIsDemoMode(false);
     setIsArchitectureReady(false);
 
+    // 检查对话轮数限制（最多20轮 = 40条消息）
+    const maxRounds = 20;
+    if (messages.length >= maxRounds * 2) {
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: 'ai',
+        text: '对话已达到最大轮数限制（20轮）。请点击右上角"生成配置"按钮，或直接说"生成配置"来生成您的AI配置文件。'
+      }]);
+      setIsCompiling(false);
+      return;
+    }
+
     // Multi-turn state machine - keep full history for context
     try {
       // 构建对话历史
@@ -1086,6 +1098,7 @@ export default function App() {
 3. 用户确认后，进入配置生成模式
 4. 如果用户继续对话，每3个完整的问答后再次询问"是否需要生成配置？"
 5. 用户说"生成配置"、"开始生成"、"够了"、"generate"等时，立即进入配置生成模式
+6. 对话最多20轮，超过后提示用户生成配置
 
 ## 输出格式（必须严格返回JSON）
 {
