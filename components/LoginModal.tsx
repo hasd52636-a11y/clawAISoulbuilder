@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { loginUser } from '../utils/auth';
+import { DonationSection } from './DonationSection';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -120,6 +121,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               </button>
             </p>
           </div>
+
+          <DonationSection />
         </div>
       </div>
     </div>

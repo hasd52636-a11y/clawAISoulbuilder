@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { registerUser } from '../utils/auth';
+import { DonationSection } from './DonationSection';
 
 interface RegisterModalProps {
   isOpen: boolean;
@@ -134,6 +135,8 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
               </button>
             </p>
           </div>
+
+          <DonationSection />
         </div>
       </div>
     </div>
