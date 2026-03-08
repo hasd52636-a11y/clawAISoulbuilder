@@ -18,7 +18,9 @@
     "test:coverage": "jest --coverage",
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration",
-    "test:e2e": "jest tests/e2e"
+    "test:e2e": "jest tests/e2e",
+    "vercel-build": "npm run build && npm run build:server",
+    "build:server": "tsc server.ts --outDir dist-server --target es2020 --module commonjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
