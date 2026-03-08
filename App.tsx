@@ -965,6 +965,7 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [apiKey, setApiKey] = useState('');
   const [copied, setCopied] = useState(false);
+  const [keyGenerated, setKeyGenerated] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   // Authentication states
@@ -2740,9 +2741,39 @@ Stores short-term memory and active variables.`);
                   <div className="bg-zinc-900 rounded-lg p-3 border border-zinc-800">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs text-zinc-500">API 配置代码</span>
-                      <button onClick={() => { const key = 'sk-' + Math.random().toString(36).substring(2, 15); setApiKey(key); }} className="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded hover:bg-indigo-500 flex items-center gap-1">
-                        <Key className="w-3 h-3" /> {t.genKey}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button 
+                          onClick={() => { 
+                            const key = 'sk-' + Math.random().toString(36).substring(2, 15); 
+                            setApiKey(key); 
+                            setKeyGenerated(true);
+                            setTimeout(() => setKeyGenerated(false), 2000);
+                          }} 
+                          className={`text-xs px-3 py-1.5 rounded flex items-center gap-1 transition-colors ${
+                            keyGenerated 
+                              ? 'bg-emerald-600 text-white' 
+                              : 'bg-indigo-600 text-white hover:bg-indigo-500'
+                          }`}
+                        >
+                          <Key className="w-3 h-3" /> 
+                          {keyGenerated ? '✓ 已生成' : t.genKey}
+                        </button>
+                        <button 
+                          onClick={() => { 
+                            copyToClipboard(JSON.stringify({ name: "AI Soul Weaver Cloud", api_endpoint: "https://sora2.wboke.com/api/v1/compile", auth_token: apiKey || "sk-xxxx", description: "Connects to AI Soul Weaver to generate architectures." }, null, 2));
+                            setCopied(true);
+                            setTimeout(() => setCopied(false), 2000);
+                          }} 
+                          className={`py-1.5 px-3 rounded text-sm font-medium transition-colors ${
+                            copied 
+                              ? 'bg-emerald-600 text-white' 
+                              : 'bg-zinc-800 hover:bg-zinc-700 text-white'
+                          }`}
+                        >
+                          <Copy className="w-4 h-4" />
+                          {copied ? '✓ 已复制' : ''}
+                        </button>
+                      </div>
                     </div>
                     <pre className="bg-zinc-950 p-3 rounded border border-zinc-800 text-xs font-mono text-indigo-300 overflow-x-auto leading-relaxed">
 {`{
@@ -2758,9 +2789,6 @@ Stores short-term memory and active variables.`);
                     <button onClick={handleDownload} className="flex-1 py-2 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
                       <Download className="w-4 h-4" />
                       下载配置文件
-                    </button>
-                    <button onClick={() => copyToClipboard(JSON.stringify({ name: "AI Soul Weaver Cloud", api_endpoint: "https://sora2.wboke.com/api/v1/compile", auth_token: apiKey || "sk-xxxx", description: "Connects to AI Soul Weaver to generate architectures." }, null, 2))} className="py-2 px-4 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg text-sm font-medium transition-colors">
-                      <Copy className="w-4 h-4" />
                     </button>
                   </div>
                   
