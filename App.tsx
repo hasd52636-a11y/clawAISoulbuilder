@@ -967,6 +967,8 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const [keyGenerated, setKeyGenerated] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [sendButtonActive, setSendButtonActive] = useState(false);
+  const [generateButtonActive, setGenerateButtonActive] = useState(false);
 
   // Authentication states
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -2450,7 +2452,10 @@ Stores short-term memory and active variables.`);
               </label>
               <textarea 
                 value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  setSendButtonActive(e.target.value.trim().length > 0);
+                }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -2462,29 +2467,39 @@ Stores short-term memory and active variables.`);
                 rows={1}
                 disabled={isCompiling}
               />
-              <button 
-                onClick={handleSend}
-                disabled={isCompiling}
-                className="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 transition-colors disabled:opacity-50 disabled:hover:bg-indigo-600 flex items-center gap-2"
-              >
-                <span className="hidden sm:inline text-sm font-bold tracking-wider">{t.compile}</span>
-                <Send className="w-4 h-4" />
-              </button>
+              {/* 发送按钮 */}
               <button 
                 onClick={() => {
-                  if (!isLoggedIn) {
-                    setShowLoginModal(true);
-                    return;
-                  }
-                  // 快速生成：基于已选名人和用户输入
-                  handleQuickGenerate();
+                  setSendButtonActive(false);
+                  handleSend();
+                }}
+                disabled={isCompiling || !inputValue.trim()}
+                className={`p-2 rounded-lg transition-all disabled:opacity-50 flex items-center gap-2 ${
+                  sendButtonActive && inputValue.trim()
+                    ? 'bg-violet-600 text-white hover:bg-violet-500 shadow-lg shadow-violet-500/30'
+                    : 'bg-zinc-700 text-zinc-400 hover:bg-zinc-600'
+                }`}
+                title="发送消息"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+              {/* 生成配置按钮 */}
+              <button 
+                onClick={() => {
+                  setGenerateButtonActive(true);
+                  setTimeout(() => setGenerateButtonActive(false), 2000);
+                  handleSend();
                 }}
                 disabled={isCompiling}
-                className="p-2 bg-green-600 text-white rounded-lg hover:bg-green-500 transition-colors disabled:opacity-50 disabled:hover:bg-green-600 flex items-center gap-2"
-                title="快速生成配置"
+                className={`p-2 rounded-lg transition-all disabled:opacity-50 flex items-center gap-2 ${
+                  generateButtonActive
+                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/30'
+                    : 'bg-indigo-600 text-white hover:bg-indigo-500'
+                }`}
+                title="生成配置"
               >
-                <Zap className="w-4 h-4" />
-                <span className="hidden sm:inline text-sm font-bold tracking-wider">快速生成</span>
+                <span className="hidden sm:inline text-sm font-bold tracking-wider">{generateButtonActive ? '✓ 已发送' : t.compile}</span>
+                {generateButtonActive ? <Check className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
               </button>
             </div>
           </div>
