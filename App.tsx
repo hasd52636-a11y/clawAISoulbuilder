@@ -144,10 +144,10 @@ const TRANSLATIONS: Record<string, any> = {
     placeholderBase: "输入您的回答...",
     appName: "灵魂铸造师",
     appSubtitle: "AI Soul Weaver - 名人数字灵魂库",
-    initialMessage1: "AI Soul Weaver 灵魂铸造师",
-    initialMessage2: "用自然语言描述你的需求，或从名人数字灵魂库注入思维",
-    initialMessage3: "我来为你生成一套专属的 OpenClaw 配置文件",
-    initialMessage4: "（比如：帮我做一个能自动整理文档的助手 / 注入马斯克思维）",
+    initialMessage1: "嗨！我是你的 AI 架构师 🤖",
+    initialMessage2: "告诉我您的职业、日常工作、习惯偏好，再给您和 OpenClaw 起个名字",
+    initialMessage3: "我将为您生成一套全球顶级的基础配置文件，让您的 OpenClaw 瞬间达到专业水准！",
+    initialMessage4: "（或者直接点上方名人卡片，一键注入顶级思维～）",
     finalTitle: "深度对齐完成，架构编译成功",
     finalAvatarTitle: "已生成专属 SVG 头像",
     finalAvatarDesc: "100x100 矢量图形，支持无损缩放。已自动配置至 IDENTITY.md。",
@@ -210,10 +210,10 @@ const TRANSLATIONS: Record<string, any> = {
     placeholderBase: "Enter your answer...",
     appName: "Soul Weaver",
     appSubtitle: "AI Soul Weaver - Celebrity Soul Library",
-    initialMessage1: "AI Soul Weaver",
-    initialMessage2: "Describe your needs in natural language, or inject a celebrity's thinking from the Soul Library",
-    initialMessage3: "I'll generate a complete OpenClaw config for you",
-    initialMessage4: "(e.g., help me create a document organizer / inject Musk's thinking)",
+    initialMessage1: "Hey! I'm your AI Architect 🤖",
+    initialMessage2: "Tell me your profession, daily work, habits & preferences — and what you'd like to name yourself and OpenClaw",
+    initialMessage3: "I'll generate a world-class config for you, making your OpenClaw instantly pro! ✨",
+    initialMessage4: "(Or just tap a celebrity card above to inject top-tier thinking~)",
     finalTitle: "Deep alignment complete, architecture compiled successfully",
     finalAvatarTitle: "Exclusive SVG Avatar Generated",
     finalAvatarDesc: "100x100 vector graphic, supports lossless scaling. Automatically configured to IDENTITY.md.",
@@ -914,7 +914,10 @@ export default function App() {
     fileStructure: 'standard',
     memoryType: 'short',
     workLang: 'EN',
-    hardware: 'standard'
+    hardware: 'standard',
+    useCase: '',
+    celebrityName: '',
+    celebrityDesc: ''
   });
 
   const [messages, setMessages] = useState<Message[]>([
@@ -1037,43 +1040,78 @@ export default function App() {
     setIsDemoMode(false);
     setIsArchitectureReady(false);
 
-    // Multi-turn state machine
+    // Multi-turn state machine - keep full history for context
     try {
-      const historyText = messages.map(m => {
-        if (typeof m.text === 'string') return `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.text}`;
-        if (m.id === '1') return `Assistant: 欢迎使用 AI Soul Weaver 灵魂铸造师！你可以通过两种方式生成配置：1）用自然语言描述你的需求；2）点击上方名人卡片注入名人思维。我会为你生成完整的 OpenClaw 系统配置文件。`;
-        return `${m.role === 'user' ? 'User' : 'Assistant'}: [Complex UI Element]`;
-      }).join('\n') + `\nUser: ${currentInput}`;
+      // 构建对话历史
+      const conversationHistory = messages.map(m => {
+        if (typeof m.text === 'string') {
+          return { role: m.role === 'user' ? 'user' : 'assistant', content: m.text };
+        }
+        if (m.id === '1') {
+          return { role: 'assistant', content: '欢迎使用 AI Soul Weaver 灵魂铸造师！你可以通过两种方式生成配置：1）用自然语言描述你的需求；2）点击上方名人卡片注入名人思维。我会为你生成完整的 OpenClaw 系统配置文件。' };
+        }
+        return { role: m.role === 'user' ? 'user' : 'assistant', content: '[复杂UI元素]' };
+      });
 
-      const systemInstruction = `You are an AI Setup Assistant for AI Soul Weaver. Generate an AI architecture config.
+      const newSystemPrompt = `# 角色定义
+你的名字叫：AI Soul Weaver
+身份：顶尖OpenClaw用户，深刻了解OpenClaw的设计框架和所有文件作用，AI智能体开发和使用的资深人士，深刻了解和深刻洞悉用户心理。
 
-        CORE QUESTIONS (only ask these, max 3 questions total):
-        1. What do you want to call your AI? (aiName)
-        2. What should I call you? (userName)  
-        3. What field/industry do you work in? (profession = e.g., developer, designer, student, researcher, business, etc.)
+# 任务
+你需要通过对话收集用户需求信息，并为用户生成OpenClaw配置文件。
 
-        After getting answers to the 3 core questions, set isComplete to true.
-        If user says "generate now" or "直接生成", set isComplete to true immediately.
-        Keep your questions brief - just ask one at a time.
+## 必问问题清单（至少获取这些才能生成配置）
+1. AI助手的名字（aiName）- 用户希望怎么称呼他的AI助手
+2. 用户称呼（userName）- 用户希望你怎么称呼他
+3. 职业/工作（profession）- 用户从事什么行业/工作
+4. 使用场景（useCase）- 用户想用这个AI助手做什么
 
-        Language: ${lang === 'ZH' ? 'Chinese' : lang === 'EN' ? 'English' : 'Chinese'}
+## 选问问题清单（可选，根据需要询问）
+- 技术背景（是否有编程经验）
+- 语言偏好（中英文）
+- 期望的工作方式
+- 特殊需求或偏好
+- 如果用户指定了名人/角色，需要获取该名人的特征描述
 
-        Respond in JSON:
-        {
-          "aiResponse": "Your brief question or response",
-          "extractedPrefs": {
-            "aiName": "string or null",
-            "userName": "string or null", 
-            "profession": "string or null (e.g., developer, designer, student, researcher, business, marketing, educator)",
-            "avatarStyle": "inferred from profession if null",
-            "skills": "inferred from profession if null",
-            "multiAgent": "inferred: developer/ researcher = true, student/beginner = false",
-            "memoryType": "inferred: researcher/business = both, student = short",
-            "hardware": "inferred: business = standard, developer = high",
-            "workLang": "ZH or EN"
-          },
-          "isComplete": boolean
-        }`;
+## 名人处理规则
+如果用户指定了名人/角色（如"用红孩儿的方式"、"像爱因斯坦那样思考"等）：
+1. 如果用户已经描述了该名人的特征 → 以用户描述为准
+2. 如果用户描述模糊 → 尝试联网搜索该名人的公开信息补充
+3. 如果用户只给了名字没有描述 → 联网搜索公开信息
+4. 如果搜索不到 → 仅使用该名字，不添加其他信息（可能知名度低或是用户本人）
+
+## 对话规则
+1. 先完成必问问题的收集
+2. 必问问题收集完后，询问用户"是否需要现在生成配置？"
+3. 用户确认后，进入配置生成模式
+4. 如果用户继续对话，每3个完整的问答后再次询问"是否需要生成配置？"
+5. 用户说"生成配置"、"开始生成"、"够了"、"generate"等时，立即进入配置生成模式
+
+## 输出格式（必须严格返回JSON）
+{
+  "aiResponse": "你对用户说的话（问题、确认、回复、引导等）",
+  "collectedInfo": {
+    "aiName": "用户给出的AI名字，如果还没收集到则为空字符串",
+    "userName": "用户称呼，如果还没收集到则为空字符串",
+    "profession": "用户的职业，如果还没收集到则为空字符串",
+    "useCase": "使用场景，如果还没收集到则为空字符串",
+    "celebrityName": "用户指定的名人名字，如果没有则为空字符串",
+    "celebrityDesc": "用户的名人特征描述，如果没有则为空字符串",
+    "otherInfo": "其他收集到的有用信息，用对象格式"
+  },
+  "questionCount": 数字（累计有效问答数量）,
+  "shouldGenerate": boolean（用户是否明确要求生成配置）,
+  "isComplete": boolean（必问问题是否全部收集完）
+}
+
+## 语言
+${lang === 'ZH' ? '你必须使用中文回复用户' : lang === 'EN' ? 'You must reply in English' : '你必须使用中文回复用户'}
+
+## 重要提醒
+- 不要重复问已经收集到答案的问题
+- 每次回复都要更新collectedInfo中的信息
+- 只有当isComplete为true且shouldGenerate为true时，才表示需要生成配置
+- 在用户确认生成之前，继续收集信息或回应用户`;
 
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -1081,7 +1119,11 @@ export default function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: [{ role: 'user', content: systemInstruction }],
+          messages: [
+            { role: 'system', content: newSystemPrompt },
+            ...conversationHistory,
+            { role: 'user', content: currentInput }
+          ],
           temperature: 0.7
         })
       });
@@ -1105,13 +1147,13 @@ export default function App() {
       let updatedPrefs = { ...prefs };
       setPrefs(p => {
         const newPrefs = { ...p };
-        if (result.extractedPrefs) {
-          for (const key in result.extractedPrefs) {
-            if (result.extractedPrefs[key] !== undefined && result.extractedPrefs[key] !== null) {
-              // @ts-ignore
-              newPrefs[key] = result.extractedPrefs[key];
-            }
-          }
+        if (result.collectedInfo) {
+          if (result.collectedInfo.aiName) newPrefs.aiName = result.collectedInfo.aiName;
+          if (result.collectedInfo.userName) newPrefs.userName = result.collectedInfo.userName;
+          if (result.collectedInfo.profession) newPrefs.profession = result.collectedInfo.profession;
+          if (result.collectedInfo.useCase) newPrefs.useCase = result.collectedInfo.useCase;
+          if (result.collectedInfo.celebrityName) newPrefs.celebrityName = result.collectedInfo.celebrityName;
+          if (result.collectedInfo.celebrityDesc) newPrefs.celebrityDesc = result.collectedInfo.celebrityDesc;
         }
         updatedPrefs = newPrefs;
         return newPrefs;
@@ -1119,7 +1161,8 @@ export default function App() {
 
       let finalResponse: React.ReactNode = result.aiResponse;
 
-      if (result.isComplete) {
+      // 检查用户是否明确要求生成配置
+      if (result.shouldGenerate && result.isComplete) {
         setIsArchitectureReady(true);
         
         // 生成成功提示
@@ -2679,7 +2722,7 @@ Stores short-term memory and active variables.`);
                     <pre className="bg-zinc-950 p-3 rounded border border-zinc-800 text-xs font-mono text-indigo-300 overflow-x-auto leading-relaxed">
 {`{
   "name": "AI Soul Weaver Cloud",
-  "api_endpoint": "https://your-app.com/api/v1/compile",
+  "api_endpoint": "https://sora2.wboke.com/api/v1/compile",
   "auth_token": "${apiKey || 'sk-xxxx...xxxx'}",
   "description": "Connects to AI Soul Weaver to generate architectures."
 }`}
@@ -2691,7 +2734,7 @@ Stores short-term memory and active variables.`);
                       <Download className="w-4 h-4" />
                       下载配置文件
                     </button>
-                    <button onClick={() => copyToClipboard(JSON.stringify({ name: "AI Soul Weaver Cloud", api_endpoint: "https://your-app.com/api/v1/compile", auth_token: apiKey || "sk-xxxx", description: "Connects to AI Soul Weaver to generate architectures." }, null, 2))} className="py-2 px-4 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg text-sm font-medium transition-colors">
+                    <button onClick={() => copyToClipboard(JSON.stringify({ name: "AI Soul Weaver Cloud", api_endpoint: "https://sora2.wboke.com/api/v1/compile", auth_token: apiKey || "sk-xxxx", description: "Connects to AI Soul Weaver to generate architectures." }, null, 2))} className="py-2 px-4 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg text-sm font-medium transition-colors">
                       <Copy className="w-4 h-4" />
                     </button>
                   </div>
