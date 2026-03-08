@@ -2501,22 +2501,6 @@ Stores short-term memory and active variables.`);
                 <span className="hidden sm:inline text-sm font-bold tracking-wider">{generateButtonActive ? '✓ 已发送' : t.compile}</span>
                 {generateButtonActive ? <Check className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
               </button>
-              {/* 快速生成按钮 */}
-              <button 
-                onClick={() => {
-                  if (!isLoggedIn) {
-                    setShowLoginModal(true);
-                    return;
-                  }
-                  handleQuickGenerate();
-                }}
-                disabled={isCompiling}
-                className="p-2 bg-green-600 text-white rounded-lg hover:bg-green-500 transition-colors disabled:opacity-50 disabled:hover:bg-green-600 flex items-center gap-2"
-                title="快速生成配置"
-              >
-                <Zap className="w-4 h-4" />
-                <span className="hidden sm:inline text-sm font-bold tracking-wider">快速生成</span>
-              </button>
             </div>
           </div>
         </section>
