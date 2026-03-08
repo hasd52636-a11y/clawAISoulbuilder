@@ -448,8 +448,8 @@ async function startServer() {
       let responseText = "";
       
       // 智能模型选择 - 使用环境变量配置
-      const primaryModel = process.env.PRIMARY_AI_PROVIDER || 'minimax';
-      const fallbackModels = process.env.FALLBACK_AI_PROVIDERS?.split(',') || ['gemini', 'glm', 'kimi'];
+      const primaryModel = process.env.PRIMARY_AI_PROVIDER || 'glm';
+      const fallbackModels = process.env.FALLBACK_AI_PROVIDERS?.split(',') || ['minimax', 'gemini', 'kimi'];
       
       // 按优先级尝试模型
       const providers = [primaryModel, ...fallbackModels];
