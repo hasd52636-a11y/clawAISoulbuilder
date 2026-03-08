@@ -1,6 +1,8 @@
 // db/models/User.ts
-import { User as PrismaUser } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { getDatabase } from '../database';
+
+type PrismaUser = Prisma.User;
 
 const prisma = getDatabase();
 

@@ -1,5 +1,5 @@
 // db/database.ts
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client/runtime/library';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 

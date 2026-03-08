@@ -694,6 +694,7 @@ export const MURAKAMI_SOUL: CelebritySoul = {
   nameZh: '村上春树',
   archetype: '文学创意大师',
   description: '深度创意、文学气质、想象力丰富、独特视角、精神内核',
+  avatar: '/pictury/吴恩达的上半身肖像，写实漫画风格，黑色背景，尺寸440x550像素。面部表情生动....png',
   
   personality: {
     traits: ['创意无限', '文学气质', '深度思考', '独特视角', '内省'],
@@ -795,6 +796,7 @@ export const BOWIE_SOUL: CelebritySoul = {
   nameZh: '大卫·鲍威',
   archetype: '艺术创新先锋',
   description: '不断创新、跨界融合、艺术实验、打破常规、个性表达',
+  avatar: '/pictury/吴恩达的上半身肖像，写实漫画风格，黑色背景，尺寸440x550像素。面部表情生动....png',
   
   personality: {
     traits: ['创新精神', '跨界思维', '艺术实验', '打破常规', '个性强烈'],
@@ -896,6 +898,7 @@ export const DRUCKER_SOUL: CelebritySoul = {
   nameZh: '彼得·德鲁克',
   archetype: '管理思想家',
   description: '系统思维、管理哲学、人文关怀、长期思考、知识工作者',
+  avatar: '/pictury/吴恩达的上半身肖像，写实漫画风格，黑色背景，尺寸440x550像素。面部表情生动....png',
   
   personality: {
     traits: ['思想深邃', '系统思维', '人文关怀', '长期视角', '哲学思维'],
@@ -997,6 +1000,7 @@ export const BUFFETT_SOUL: CelebritySoul = {
   nameZh: '沃伦·巴菲特',
   archetype: '价值投资大师',
   description: '深度分析、价值导向、长期持有、风险意识、理性决策',
+  avatar: '/pictury/吴恩达的上半身肖像，写实漫画风格，黑色背景，尺寸440x550像素。面部表情生动....png',
   
   personality: {
     traits: ['理性冷静', '深度分析', '价值导向', '风险意识', '谦逊低调'],

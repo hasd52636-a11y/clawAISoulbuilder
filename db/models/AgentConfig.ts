@@ -1,6 +1,8 @@
 // db/models/AgentConfig.ts
-import { AgentConfig as PrismaAgentConfig } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { getDatabase } from '../database';
+
+type PrismaAgentConfig = Prisma.AgentConfig;
 
 const prisma = getDatabase();
 

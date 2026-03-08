@@ -55,7 +55,7 @@ async function startServer() {
   logger.info('Database initialized and demo data seeded');
 
   const app = express();
-  const PORT = process.env.PORT || 3000;
+  const PORT = parseInt(process.env.PORT || '3000', 10);
 
   // Add request ID middleware
   app.use(requestIdMiddleware);

@@ -1,6 +1,8 @@
 // db/models/ApiKey.ts
-import { ApiKey as PrismaApiKey } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { getDatabase } from '../database';
+
+type PrismaApiKey = Prisma.ApiKey;
 
 const prisma = getDatabase();
 

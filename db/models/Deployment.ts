@@ -1,6 +1,8 @@
 // db/models/Deployment.ts
-import { Deployment as PrismaDeployment } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { getDatabase } from '../database';
+
+type PrismaDeployment = Prisma.Deployment;
 
 const prisma = getDatabase();
 
