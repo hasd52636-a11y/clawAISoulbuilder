@@ -975,6 +975,7 @@ export default function App() {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showQuickGenerateModal, setShowQuickGenerateModal] = useState(false);
   const [pendingMaster, setPendingMaster] = useState<typeof MASTERS[0] | null>(null);
+  const [quickGenUserName, setQuickGenUserName] = useState('');
   const [notification, setNotification] = useState<{type: 'success' | 'info', message: string} | null>(null);
   
   // Language dropdown state
@@ -1257,8 +1258,15 @@ ${lang === 'ZH' ? '你必须使用中文回复用户' : lang === 'EN' ? 'You mus
     if (!pendingMaster) return;
     
     const master = pendingMaster;
+    const userName = quickGenUserName.trim();
     setShowQuickGenerateModal(false);
     setAppliedMasters(master.id);
+    setQuickGenUserName('');
+    
+    // 如果用户输入了名字，更新prefs
+    if (userName) {
+      setPrefs(p => ({ ...p, userName }));
+    }
     
     // Show notification
     const displayName = master.nameZh || master.name;
@@ -2922,7 +2930,7 @@ Stores short-term memory and active variables.`);
                 </div>
 
                 {/* AI名字预览 */}
-                <div className="bg-zinc-800/50 rounded-xl p-3 mb-6 border border-zinc-700/50">
+                <div className="bg-zinc-800/50 rounded-xl p-3 mb-3 border border-zinc-700/50">
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-zinc-400">AI名字：</span>
                     <span className="text-sm font-medium text-white">
@@ -2931,20 +2939,42 @@ Stores short-term memory and active variables.`);
                   </div>
                 </div>
 
+                {/* 用户名字输入 */}
+                <div className="mb-6">
+                  <label className="text-xs text-zinc-400 mb-2 block">请输入您的称呼：</label>
+                  <input 
+                    type="text" 
+                    value={quickGenUserName}
+                    onChange={(e) => setQuickGenUserName(e.target.value)}
+                    placeholder="例如：大王、老板、先生"
+                    className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500/50 transition-colors"
+                  />
+                </div>
+
                 {/* 按钮组 */}
                 <div className="flex gap-3">
                   <button 
                     onClick={() => {
                       setShowQuickGenerateModal(false);
                       setPendingMaster(null);
+                      setQuickGenUserName('');
                     }}
                     className="flex-1 py-3 px-4 rounded-xl bg-zinc-700/50 hover:bg-zinc-600/50 text-zinc-300 font-medium transition-all border border-zinc-600/30 hover:border-zinc-500/50"
                   >
                     取消
                   </button>
                   <button 
-                    onClick={confirmQuickGenerate}
-                    className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium transition-all shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 border border-violet-400/30"
+                    onClick={() => {
+                      if (quickGenUserName.trim()) {
+                        confirmQuickGenerate();
+                      }
+                    }}
+                    disabled={!quickGenUserName.trim()}
+                    className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all shadow-lg border ${
+                      quickGenUserName.trim()
+                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-violet-500/25 hover:shadow-violet-500/40 border-violet-400/30'
+                        : 'bg-zinc-700 text-zinc-500 cursor-not-allowed border-zinc-600/30'
+                    }`}
                   >
                     确认生成
                   </button>
