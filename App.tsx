@@ -1121,6 +1121,24 @@ export default function App() {
 
       if (result.isComplete) {
         setIsArchitectureReady(true);
+        
+        // 生成成功提示
+        setDownloadComplete(true);
+        try {
+          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+          oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.3);
+        } catch (e) {}
+        setTimeout(() => setDownloadComplete(false), 3000);
+        
         setMessages(prev => [...prev, {
           id: Date.now().toString(),
           role: 'ai',
@@ -1245,6 +1263,23 @@ export default function App() {
 
       // 直接完成，跳过对话
       setIsArchitectureReady(true);
+      
+      // 快速生成成功提示
+      setDownloadComplete(true);
+      try {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+      } catch (e) {}
+      setTimeout(() => setDownloadComplete(false), 3000);
       
       const finalMsg: Message = {
         id: Date.now().toString(),
@@ -1444,6 +1479,86 @@ ${master.decisionFramework}
     return { folder, readme, rules, prompts, workGuide };
   };
 
+  // 技能推荐系统
+  const RECOMMENDED_SKILLS: Record<string, { required: string[], optional: string[] }> = {
+    'developer': {
+      required: ['file-manager', 'find-skills-skill', 'coding-agent', 'web-search', 'documentation'],
+      optional: ['github', 'code-refactor', 'test-driven-development', 'devops-automation', 'security-audit', 'database-management', 'backend-development']
+    },
+    'designer': {
+      required: ['file-manager', 'find-skills-skill', 'web-search', 'documentation'],
+      optional: ['frontend-design', 'ui-design', 'video-editing', 'graphic-design', 'figma', 'image-generation', 'autoclaw-browser']
+    },
+    'marketing': {
+      required: ['file-manager', 'find-skills-skill', 'web-search', 'documentation'],
+      optional: ['social-media-management', 'marketing-ideas', 'content-strategy', 'email-marketing', 'seo-audit', 'influencer-marketing', 'brand-management']
+    },
+    'researcher': {
+      required: ['file-manager', 'find-skills-skill', 'web-search', 'documentation'],
+      optional: ['notion', 'summarize', 'research-assistant', 'knowledge-management', 'data-analysis', 'academic-writing', 'web-analytics']
+    },
+    'student': {
+      required: ['file-manager', 'find-skills-skill', 'web-search', 'documentation'],
+      optional: ['knowledge-management', 'language-learning', 'summarize', 'research-assistant', 'online-course-creation', 'note-taking']
+    },
+    'business': {
+      required: ['file-manager', 'find-skills-skill', 'web-search', 'documentation'],
+      optional: ['project-management', 'customer-relationship', 'business-analytics', 'financial-analysis', 'presentation-tools', 'spreadsheet-management']
+    },
+    'writer': {
+      required: ['file-manager', 'find-skills-skill', 'web-search', 'documentation'],
+      optional: ['creative-writing', 'content-strategy', 'social-content', 'seo-audit', 'blogwriting', 'copywriting', 'summarize']
+    },
+    'default': {
+      required: ['file-manager', 'find-skills-skill', 'coding-agent', 'web-search', 'documentation'],
+      optional: ['autoclaw-browser', 'summarize', 'weather', 'calendar', 'humanizer', 'voice-assistant']
+    }
+  };
+
+  // 根据职业获取推荐技能
+  const getRecommendedSkills = (profession: string, master?: MasterPhilosophy): { required: string[], optional: string[] } => {
+    const normalized = profession.toLowerCase();
+    
+    // 职业匹配
+    if (normalized.includes('开发') || normalized.includes('dev') || normalized.includes('程序')) {
+      return RECOMMENDED_SKILLS.developer;
+    }
+    if (normalized.includes('设计') || normalized.includes('design')) {
+      return RECOMMENDED_SKILLS.designer;
+    }
+    if (normalized.includes('运营') || normalized.includes('市场') || normalized.includes('market')) {
+      return RECOMMENDED_SKILLS.marketing;
+    }
+    if (normalized.includes('研究') || normalized.includes('research')) {
+      return RECOMMENDED_SKILLS.researcher;
+    }
+    if (normalized.includes('学生') || normalized.includes('study')) {
+      return RECOMMENDED_SKILLS.student;
+    }
+    if (normalized.includes('商务') || normalized.includes('business')) {
+      return RECOMMENDED_SKILLS.business;
+    }
+    if (normalized.includes('写作') || normalized.includes('写') || normalized.includes('writer')) {
+      return RECOMMENDED_SKILLS.writer;
+    }
+    
+    // 如果有名人卡片，根据名人职业推荐
+    if (master) {
+      const masterProfession = master.nameZh;
+      if (masterProfession.includes('埃隆') || masterProfession.includes('马斯克')) {
+        return RECOMMENDED_SKILLS.developer;
+      }
+      if (masterProfession.includes('乔布斯')) {
+        return RECOMMENDED_SKILLS.designer;
+      }
+      if (masterProfession.includes('巴菲特') || masterProfession.includes('查理')) {
+        return RECOMMENDED_SKILLS.business;
+      }
+    }
+    
+    return RECOMMENDED_SKILLS.default;
+  };
+
   // 生成嵌入到核心文件的名人信息（有机融合）
   const generateEmbeddedMasterContent = (master: MasterPhilosophy) => {
     return {
@@ -1572,6 +1687,26 @@ ${master.thinkingHabits.slice(0, 2).map((t, i) => `${i + 1}. ${t}`).join('\n')}`
 
       // TOOLS.md - 工具配置
       toolsEmbed: `# TOOLS.md - ${prefs.aiName} 工具配置
+
+## ⚠️ 首次使用必读
+
+### 安装 ClawHub CLI
+\`\`\`bash
+npm install -g clawhub
+\`\`\`
+
+### 安装必选技能（所有用户推荐）
+\`\`\`bash
+clawhub install file-manager find-skills-skill coding-agent web-search documentation
+\`\`\`
+
+### 可选技能根据需要安装
+\`\`\`bash
+# 根据需要安装其他技能
+clawhub install <技能名>
+\`\`\`
+
+---
 
 ## 🔧 核心工具权限
 
@@ -1789,12 +1924,51 @@ The AI will approach work, communication, and decision-making in ${master.name}'
         const master = appliedMasters ? MASTERS.find(m => m.id === appliedMasters) : null;
         const masterEmbed = master ? generateEmbeddedMasterContent(master) : null;
         
+        // 获取推荐技能
+        const recommendedSkills = getRecommendedSkills(prefs.profession || '', master);
+        const skillCount = recommendedSkills.required.length + recommendedSkills.optional.length;
+        const maxSkills = 15;
+        
+        // TOOLS.md - 工具配置（嵌入名人技术偏好）
+        const toolsContent = masterEmbed ? masterEmbed.toolsEmbed : `# Tool Configuration
+
+## Custom Skills
+${prefs.skills.length > 0 ? prefs.skills.join(', ') : 'web_fetch, read, write'}`;
+
+        // 添加推荐技能章节
+        const skillsSection = `
+
+---
+
+## 🎯 推荐技能（基于职业: ${prefs.profession || '通用'}）
+
+### ✅ 必选技能（建议全部安装）
+${recommendedSkills.required.map(s => `- ${s}`).join('\n')}
+
+### 🌐 可选技能（根据需要选择，总数建议不超过${maxSkills}个）
+${recommendedSkills.optional.slice(0, maxSkills - recommendedSkills.required.length).map(s => `- ${s}`).join('\n')}
+
+### 📊 当前推荐总数: ${Math.min(skillCount, maxSkills)} 个
+
+### 🔧 安装命令
+\`\`\`bash
+# 安装必选技能
+clawhub install ${recommendedSkills.required.join(' ')}
+
+# 安装可选技能（根据需要选择）
+clawhub install ${recommendedSkills.optional.slice(0, 5).join(' ')}
+\`\`\`
+`;
+        
+        // 合并内容
+        const finalToolsContent = toolsContent + skillsSection;
+        
+        workspace.file("TOOLS.md", finalToolsContent);
+
         // AGENTS.md - 核心行为配置（嵌入名人决策框架）
-        workspace.file("AGENTS.md", `# AGENTS.md - Agent Configuration
+        const agentsContent = `# AGENTS.md - Agent Configuration
 
-${masterEmbed ? `${masterEmbed.agentsEmbed.toolUse}
-
-${masterEmbed.agentsEmbed.responseFormat}` : ''}
+${masterEmbed ? masterEmbed.agentsEmbed.toolUse + '\n\n' + masterEmbed.agentsEmbed.responseFormat : ''}
 
 ---
 
@@ -1807,7 +1981,8 @@ ${prefs.memoryType === 'both' ? 'memory: short_term + vector_db' : 'memory: shor
 # Agent Behaviors
 - When unsure, ask for clarification
 - Prioritize user goals above all
-- Be transparent about limitations`);
+- Be transparent about limitations`;
+        workspace.file("AGENTS.md", agentsContent);
 
         // SOUL.md - 核心人格（嵌入名人思维模式）
         workspace.file("SOUL.md", masterEmbed ? masterEmbed.soulEmbed : `# OpenClaw Core Identity
@@ -1829,12 +2004,6 @@ This file defines the immutable core persona.`);
 # Personality Framework
 
 Defines long-term goals, reflection triggers, and the emotion engine parameters.`);
-
-        // TOOLS.md - 工具配置（嵌入名人技术偏好）
-        workspace.file("TOOLS.md", masterEmbed ? masterEmbed.toolsEmbed : `# Tool Configuration
-
-## Custom Skills
-${prefs.skills.length > 0 ? prefs.skills.join(', ') : 'web_fetch, read, write'}`);
 
         // MEMORY.md - 记忆管理（嵌入名人思维习惯）
         workspace.file("MEMORY.md", masterEmbed ? masterEmbed.memoryEmbed : `# Memory Management
@@ -1931,17 +2100,6 @@ Stores short-term memory and active variables.`);
 
       const content = await zip.generateAsync({ type: "blob" });
       saveAs(content, "clawnexus_brain.zip");
-      
-      // 下载完成提示
-      setDownloadComplete(true);
-      
-      // 播放提示音
-      const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleR8MPJXa38qUARkWj9jPv4cfCUCa2teleR8MPJXa38qUARkWj9jPv4cfCUCa2teleR8MPJXa38qUARkWj9jPv4cfCUCa2teleR8MPJXa38qUARkW');
-      audio.volume = 0.5;
-      audio.play().catch(() => {});
-      
-      // 3秒后重置状态
-      setTimeout(() => setDownloadComplete(false), 3000);
     } catch (error) {
       console.error("Error generating ZIP:", error);
       alert("Failed to generate ZIP file.");
