@@ -20,11 +20,6 @@ import { fileDownloadService } from "./services/fileDownloadService.js";
 
 dotenv.config();
 
-// Initialize database on startup
-getDatabase();
-initializeDemoData();
-logger.info('Database initialized and demo data seeded');
-
 // Start file cleanup service
 fileCleanupService.start();
 logger.info('File cleanup service started');
@@ -54,6 +49,11 @@ const validateApiKey = (req: express.Request, res: express.Response, next: expre
 };
 
 async function startServer() {
+  // Initialize database on startup
+  getDatabase();
+  await initializeDemoData();
+  logger.info('Database initialized and demo data seeded');
+
   const app = express();
   const PORT = process.env.PORT || 3000;
 

@@ -3,16 +3,87 @@ import { UserModel } from './models/User';
 import { ApiKeyModel } from './models/ApiKey';
 
 /**
+ * Create database tables
+ */
+export async function createTables(): Promise<void> {
+  const db = getDatabase();
+
+  try {
+    // Create users table
+    await db.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "User" (
+        id TEXT PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        name TEXT,
+        createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updatedat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+
+    // Create api_keys table
+    await db.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "ApiKey" (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        key TEXT UNIQUE NOT NULL,
+        createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        lastused TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES "User"(id) ON DELETE CASCADE
+      );
+    `;
+
+    // Create agent_configs table
+    await db.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "AgentConfig" (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        soul_id TEXT NOT NULL,
+        agent_name TEXT NOT NULL,
+        config JSONB,
+        status TEXT DEFAULT 'created',
+        createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        expiresat TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES "User"(id) ON DELETE CASCADE
+      );
+    `;
+
+    // Create deployments table
+    await db.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "Deployment" (
+        id TEXT PRIMARY KEY,
+        config_id TEXT NOT NULL,
+        user_id TEXT NOT NULL,
+        target_system TEXT NOT NULL,
+        status TEXT DEFAULT 'pending',
+        result TEXT,
+        createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updatedat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (config_id) REFERENCES "AgentConfig"(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES "User"(id) ON DELETE CASCADE
+      );
+    `;
+
+    console.log('✓ Database tables created');
+  } catch (error: any) {
+    console.error('Error creating database tables:', error);
+    throw error;
+  }
+}
+
+/**
  * Initialize database with demo data
  */
-export function initializeDemoData(): void {
+export async function initializeDemoData(): Promise<void> {
   try {
+    // Create tables if they don't exist
+    await createTables();
+
     // Create demo user
-    const demoUser = UserModel.create('demo@clawnexus.io', 'Demo User');
+    const demoUser = await UserModel.create('demo@clawnexus.io', 'Demo User');
     console.log('✓ Created demo user:', demoUser.id);
 
     // Create demo API key
-    const { key, apiKey } = ApiKeyModel.create(demoUser.id, 'Demo Key');
+    const apiKey = await ApiKeyModel.create(demoUser.id, 'demo-key-123');
     console.log('✓ Created demo API key:', apiKey.id);
     console.log('  Key (save this): demo-key-123');
 
