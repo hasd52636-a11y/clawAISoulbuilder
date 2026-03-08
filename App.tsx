@@ -17,51 +17,11 @@ import { saveAs } from 'file-saver';
 
 // AI Soul Weaver Logo - 灵魂铸造师 Logo
 const SoulWeaverLogo = ({ className }: { className?: string }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 48 48" 
-    fill="none"
+  <img 
+    src="/openclawsoul.png" 
+    alt="AI Soul Weaver Logo" 
     className={className}
-  >
-    {/* 外圈 - 象征灵魂环绕 */}
-    <circle cx="24" cy="24" r="20" stroke="url(#soulGradient)" strokeWidth="2.5" fill="none" opacity="0.8"/>
-    
-    {/* 中心灵魂火花 */}
-    <path 
-      d="M24 8 L24 18 M24 30 L24 40 M12 24 L18 24 M30 24 L36 24" 
-      stroke="url(#soulGradient)" 
-      strokeWidth="2.5" 
-      strokeLinecap="round"
-    />
-    
-    {/* 四角灵魂光芒 */}
-    <path d="M24 4 L24 8" stroke="url(#soulGradient)" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M24 40 L24 44" stroke="url(#soulGradient)" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M4 24 L8 24" stroke="url(#soulGradient)" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M40 24 L44 24" stroke="url(#soulGradient)" strokeWidth="2" strokeLinecap="round"/>
-    
-    {/* 内部编织图案 - 象征灵魂铸造 */}
-    <path 
-      d="M16 16 Q24 24 16 32 Q8 24 16 16" 
-      fill="url(#soulGradient)" 
-      opacity="0.9"
-    />
-    <path 
-      d="M32 16 Q24 24 32 32 Q40 24 32 16" 
-      fill="url(#soulGradient)" 
-      opacity="0.9"
-    />
-    <circle cx="24" cy="24" r="4" fill="url(#soulGradient)" />
-    
-    {/* 渐变定义 */}
-    <defs>
-      <linearGradient id="soulGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#8B5CF6" />
-        <stop offset="50%" stopColor="#EC4899" />
-        <stop offset="100%" stopColor="#F59E0B" />
-      </linearGradient>
-    </defs>
-  </svg>
+  />
 );
 
 const SparkleIcon = ({ className }: { className?: string }) => (
@@ -153,6 +113,13 @@ const TRANSLATIONS: Record<string, any> = {
     finalAvatarDesc: "100x100 矢量图形，支持无损缩放。已自动配置至 IDENTITY.md。",
     finalIntro: "基于您的详细需求，已为您生成",
     finalStrong: "专属数字生命架构",
+    // 快速生成弹窗文案
+    quickGenTitle: "确认生成配置",
+    quickGenSubtitle: "将基于以下名人思维生成配置",
+    quickGenYourName: "请输入您的称呼：",
+    quickGenYourNamePlaceholder: "例如：大王、老板、先生",
+    quickGenCancel: "取消",
+    quickGenConfirm: "确认生成",
     finalId: "身份标识：",
     finalSkills: "核心技能：",
     finalSkillsCustom: "已挂载 自定义技能组",
@@ -242,6 +209,12 @@ const TRANSLATIONS: Record<string, any> = {
     soulInjected: "Injected {name}'s thinking pattern",
     loginSuccess: "Login successful! Welcome back",
     registerSuccess: "Registration successful! Please login",
+    quickGenTitle: "Confirm Generation",
+    quickGenSubtitle: "Will generate config based on celebrity's thinking pattern",
+    quickGenYourName: "Please enter your name:",
+    quickGenYourNamePlaceholder: "e.g., Boss, Sir, Mr.",
+    quickGenCancel: "Cancel",
+    quickGenConfirm: "Confirm & Generate",
     masters: {
       'ai-agents': { title: 'Full-Dimension Personality', quote: '"Build a complete digital soul with goals, memory, reflection, planning, and emotions."', actionText: 'Inject Full Personality' },
       'kondo': { title: 'Digital Minimalism', quote: '"Keep only the memories that spark joy. Expired context is the root of LLM hallucinations."', actionText: 'Inject Memory Sharding' },
@@ -251,7 +224,7 @@ const TRANSLATIONS: Record<string, any> = {
       'bezos': { title: 'API Contract', quote: '"All teams must expose data and functionality through service interfaces. Anyone who doesn\'t will be fired."', actionText: 'Inject Microservices' }
     }
   },
-  JA: { oracle: "オラクルストリーム", plugins: "有名人デジタルソウルライブラリ", topo: "トポロジー", files: "ワークスペース", code: "ソースコード", sync: "デプロイと同期", compile: "コンパイル", export: "エクスポート .ZIP", login: "ログイン", apiKey: "APIキー", selectToInject: "注入を選択", awaitingInput: "入力待ち", awaitingDesc: "左側に要件を記述するか、上からマスターの哲学を注入してください。", syncTitle: "OpenClaw クイック認証", syncDesc: "APIキーを生成し、ローカルターミナルで以下のコードを実行して同期します。", genKey: "キーを生成", step1: "1. APIキー", step2: "2. 同期コマンド", generated: "生成済み", placeholderBase: "回答を入力してください...", initialMessage1: "認証に成功しました。AI Soul Weaver デジタルライフファウンドリへようこそ。", initialMessage2: "私はあなたのアーキテクトです。最適な OpenClaw アーキテクチャを生成するために、深いアライメントが必要です。これはあなたの AI アシスタントの基礎となる遺伝子を決定します。", initialMessage3: "まず、AI アシスタントにどのような名前を付けたいですか？また、あなたを何とお呼びすればよいですか？", initialMessage4: "（例：Jarvis と呼んで、私を Tony と呼んで）", finalTitle: "アライメント完了、アーキテクチャのコンパイル成功", finalAvatarTitle: "専用 SVG アバター生成済み", finalAvatarDesc: "100x100 ベクターグラフィック。IDENTITY.md に自動設定されました。", finalIntro: "詳細な要件に基づいて、", finalStrong: "専用のデジタルライフアーキテクチャ", finalId: "ID: ", finalSkills: "コアスキル: ", finalSkillsCustom: "カスタムスキルセットをマウント", finalSkillsBase: "基本スキルをマウント", finalArch: "アーキテクチャモード: ", finalArchMulti: "マルチエージェントルーティング連携", finalArchSingle: "モノリシック万能モデル", finalMem: "メモリシステム: ", finalMemBoth: "短期コンテキスト + 長期ベクトルDB", finalMemShort: "短期コンテキストのみ", finalHard: "ハードウェア適応: ", finalHardHigh: "高並行ローカル+クラウドハイブリッド戦略", finalHardStd: "標準並行クラウド戦略", finalFooter: "右側の【コンソール】パネルで基盤となるアーキテクチャの変更を確認してください。上部からマスタープラグインを注入することもできます。", errorMsg: "通信が中断されました。再試行してください。", seeMore: "もっと見る", soulLibraryTitle: "有名人デジタルソウルライブラリ", soulLibraryDesc: "世界トップの思考パターンを選択し、ワンクリックでSoulを注入", injected: "注入済み", inject: "Soulを注入", soulInjected: "{name} の思考パターンを注入しました", loginSuccess: "ログイン成功！おかえりなさい", registerSuccess: "登録成功！ログインしてください",
+  JA: { oracle: "オラクルストリーム", plugins: "有名人デジタルソウルライブラリ", topo: "トポロジー", files: "ワークスペース", code: "ソースコード", sync: "デプロイと同期", compile: "コンパイル", export: "エクスポート .ZIP", login: "ログイン", apiKey: "APIキー", selectToInject: "注入を選択", awaitingInput: "入力待ち", awaitingDesc: "左側に要件を記述するか、上からマスターの哲学を注入してください。", syncTitle: "OpenClaw クイック認証", syncDesc: "APIキーを生成し、ローカルターミナルで以下のコードを実行して同期します。", genKey: "キーを生成", step1: "1. APIキー", step2: "2. 同期コマンド", generated: "生成済み", placeholderBase: "回答を入力してください...", initialMessage1: "認証に成功しました。AI Soul Weaver デジタルライフファウンドリへようこそ。", initialMessage2: "私はあなたのアーキテクトです。最適な OpenClaw アーキテクチャを生成するために、深いアライメントが必要です。これはあなたの AI アシスタントの基礎となる遺伝子を決定します。", initialMessage3: "まず、AI アシスタントにどのような名前を付けたいですか？また、あなたを何とお呼びすればよいですか？", initialMessage4: "（例：Jarvis と呼んで、私を Tony と呼んで）", finalTitle: "アライメント完了、アーキテクチャのコンパイル成功", finalAvatarTitle: "専用 SVG アバター生成済み", finalAvatarDesc: "100x100 ベクターグラフィック。IDENTITY.md に自動設定されました。", finalIntro: "詳細な要件に基づいて、", finalStrong: "専用のデジタルライフアーキテクチャ", finalId: "ID: ", finalSkills: "コアスキル: ", finalSkillsCustom: "カスタムスキルセットをマウント", finalSkillsBase: "基本スキルをマウント", finalArch: "アーキテクチャモード: ", finalArchMulti: "マルチエージェントルーティング連携", finalArchSingle: "モノリシック万能モデル", finalMem: "メモリシステム: ", finalMemBoth: "短期コンテキスト + 長期ベクトルDB", finalMemShort: "短期コンテキストのみ", finalHard: "ハードウェア適応: ", finalHardHigh: "高並行ローカル+クラウドハイブリッド戦略", finalHardStd: "標準並行クラウド戦略", finalFooter: "右側の【コンソール】パネルで基盤となるアーキテクチャの変更を確認してください。上部からマスタープラグインを注入することもできます。", errorMsg: "通信が中断されました。再試行してください。", seeMore: "もっと見る", soulLibraryTitle: "有名人デジタルソウルライブラリ", soulLibraryDesc: "世界トップの思考パターンを選択し、ワンクリックでSoulを注入", injected: "注入済み", inject: "Soulを注入", soulInjected: "{name} の思考パターンを注入しました", loginSuccess: "ログイン成功！おかえりなさい", registerSuccess: "登録成功！ログインしてください", quickGenTitle: "確認して生成", quickGenSubtitle: "有名人の思考パターンに基づいて設定を生成します", quickGenYourName: "お名前を入力してください：", quickGenYourNamePlaceholder: "例：先生、先輩", quickGenCancel: "キャンセル", quickGenConfirm: "確認して生成",
     masters: {
       'ai-agents': { title: '全次元人格', quote: '「目標、記憶、反省、計画、感情を備えた完全なデジタルソウルを構築する。」', actionText: '全次元人格を注入' },
       'kondo': { title: 'デジタルミニマリズム', quote: '「ときめく記憶だけを残す。期限切れのコンテキストはLLMの幻覚の根源だ。」', actionText: '記憶シャーディングを注入' },
@@ -261,7 +234,7 @@ const TRANSLATIONS: Record<string, any> = {
       'bezos': { title: 'API契約', quote: '「すべてのチームはサービスインターフェースを通じてデータと機能を公開しなければならない。そうしない者は解雇する。」', actionText: 'マイクロサービスを注入' }
     }
   },
-  KO: { oracle: "오라클 스트림", plugins: "유명인 디지털 영혼 라이브러리", topo: "토폴로지", files: "작업 공간", code: "소스 코드", sync: "배포 및 동기화", compile: "컴파일", export: "내보내기 .ZIP", login: "로그인", apiKey: "API 키", selectToInject: "주입 선택", awaitingInput: "입력 대기 중", awaitingDesc: "왼쪽에 요구 사항을 설명하거나 위에서 마스터 철학을 주입하십시오.", syncTitle: "OpenClaw 빠른 인증", syncDesc: "API 키를 생성하고 로컬 터미널에서 아래 코드를 실행하여 동기화하십시오.", genKey: "키 생성", step1: "1. API 키", step2: "2. 동기화 명령", generated: "생성됨", placeholderBase: "답변을 입력하세요...", initialMessage1: "인증 성공. AI Soul Weaver 디지털 라이프 파운드리에 오신 것을 환영합니다.", initialMessage2: "저는 당신의 아키텍트입니다. 가장 합리적인 OpenClaw 아키텍처를 생성하기 위해 깊은 정렬이 필요합니다. 이것은 AI 어시스턴트의 기본 유전자를 결정합니다.", initialMessage3: "먼저, AI 어시스턴트의 이름을 무엇으로 하시겠습니까? 그리고 제가 당신을 어떻게 부르면 좋을까요?", initialMessage4: "(예: Jarvis라고 부르고, 저를 Tony라고 부르세요)", finalTitle: "정렬 완료, 아키텍처 컴파일 성공", finalAvatarTitle: "전용 SVG 아바타 생성됨", finalAvatarDesc: "100x100 벡터 그래픽. IDENTITY.md에 자동 구성됨.", finalIntro: "상세한 요구 사항을 기반으로 ", finalStrong: "전용 디지털 라이프 아키텍처", finalId: "신원: ", finalSkills: "핵심 기술: ", finalSkillsCustom: "사용자 지정 기술 세트 마운트됨", finalSkillsBase: "기본 기술 마운트됨", finalArch: "아키텍처 모드: ", finalArchMulti: "다중 에이전트 라우팅 협업", finalArchSingle: "모놀리식 만능 모델", finalMem: "메모리 시스템: ", finalMemBoth: "단기 컨텍스트 + 장기 벡터 DB", finalMemShort: "단기 컨텍스트만", finalHard: "하드웨어 적응: ", finalHardHigh: "고동시성 로컬+클라우드 하이브리드 전략", finalHardStd: "표준 동시성 클라우드 전략", finalFooter: "오른쪽 [콘솔] 패널에서 기본 아키텍처 변경 사항을 확인하십시오. 위에서 마스터 플러그인을 주입할 수도 있습니다.", errorMsg: "통신이 중단되었습니다. 다시 시도하십시오.", seeMore: "더보기", soulLibraryTitle: "유명인 디지털 영혼 라이브러리", soulLibraryDesc: "세계 톱급 인물의 사고 방식을 선택하고 원클릭으로 영혼을 주입하세요", injected: "주입됨", inject: "영혼 주입", soulInjected: "{name} 의 사고 방식을 주입했습니다", loginSuccess: "로그인 성공! 환영합니다", registerSuccess: "등록 성공! 로그인 해주세요",
+  KO: { oracle: "오라클 스트림", plugins: "유명인 디지털 영혼 라이브러리", topo: "토폴로지", files: "작업 공간", code: "소스 코드", sync: "배포 및 동기화", compile: "컴파일", export: "내보내기 .ZIP", login: "로그인", apiKey: "API 키", selectToInject: "주입 선택", awaitingInput: "입력 대기 중", awaitingDesc: "왼쪽에 요구 사항을 설명하거나 위에서 마스터 철학을 주입하십시오.", syncTitle: "OpenClaw 빠른 인증", syncDesc: "API 키를 생성하고 로컬 터미널에서 아래 코드를 실행하여 동기화하십시오.", genKey: "키 생성", step1: "1. API 키", step2: "2. 동기화 명령", generated: "생성됨", placeholderBase: "답변을 입력하세요...", initialMessage1: "인증 성공. AI Soul Weaver 디지털 라이프 파운드리에 오신 것을 환영합니다.", initialMessage2: "저는 당신의 아키텍트입니다. 가장 합리적인 OpenClaw 아키텍처를 생성하기 위해 깊은 정렬이 필요합니다. 이것은 AI 어시스턴트의 기본 유전자를 결정합니다.", initialMessage3: "먼저, AI 어시스턴트의 이름을 무엇으로 하시겠습니까? 그리고 제가 당신을 어떻게 부르면 좋을까요?", initialMessage4: "(예: Jarvis라고 부르고, 저를 Tony라고 부르세요)", finalTitle: "정렬 완료, 아키텍처 컴파일 성공", finalAvatarTitle: "전용 SVG 아바타 생성됨", finalAvatarDesc: "100x100 벡터 그래픽. IDENTITY.md에 자동 구성됨.", finalIntro: "상세한 요구 사항을 기반으로 ", finalStrong: "전용 디지털 라이프 아키텍처", finalId: "신원: ", finalSkills: "핵심 기술: ", finalSkillsCustom: "사용자 지정 기술 세트 마운트됨", finalSkillsBase: "기본 기술 마운트됨", finalArch: "아키텍처 모드: ", finalArchMulti: "다중 에이전트 라우팅 협업", finalArchSingle: "모놀리식 만능 모델", finalMem: "메모리 시스템: ", finalMemBoth: "단기 컨텍스트 + 장기 벡터 DB", finalMemShort: "단기 컨텍스트만", finalHard: "하드웨어 적응: ", finalHardHigh: "고동시성 로컬+클라우드 하이브리드 전략", finalHardStd: "표준 동시성 클라우드 전략", finalFooter: "오른쪽 [콘솔] 패널에서 기본 아키텍처 변경 사항을 확인하십시오. 위에서 마스터 플러그인을 주입할 수도 있습니다.", errorMsg: "통신이 중단되었습니다. 다시 시도하십시오.", seeMore: "더보기", soulLibraryTitle: "유명인 디지털 영혼 라이브러리", soulLibraryDesc: "세계 톱급 인물의 사고 방식을 선택하고 원클릭으로 영혼을 주입하세요", injected: "주입됨", inject: "영혼 주입", soulInjected: "{name} 의 사고 방식을 주입했습니다", loginSuccess: "로그인 성공! 환영합니다", registerSuccess: "등록 성공! 로그인 해주세요", quickGenTitle: "생성 확인", quickGenSubtitle: "유명인의 사고 패턴 기반으로 설정 생성", quickGenYourName: "이름을 입력해 주세요:", quickGenYourNamePlaceholder: "예: 사장님, 선생님", quickGenCancel: "취소", quickGenConfirm: "확인 및 생성",
     masters: {
       'ai-agents': { title: '전차원 인격', quote: '"목표, 기억, 반성, 계획 및 감정을 갖춘 완전한 디지털 영혼을 구축하십시오."', actionText: '전차원 인격 주입' },
       'kondo': { title: '디지털 미니멀리즘', quote: '"설레는 기억만 남기십시오. 만료된 컨텍스트는 LLM 환각의 근원입니다."', actionText: '메모리 샤딩 주입' },
@@ -271,7 +244,7 @@ const TRANSLATIONS: Record<string, any> = {
       'bezos': { title: 'API 계약', quote: '"모든 팀은 서비스 인터페이스를 통해 데이터와 기능을 노출해야 합니다. 그렇지 않은 사람은 해고될 것입니다."', actionText: '마이크로서비스 주입' }
     }
   },
-  VI: { oracle: "Luồng Oracle", plugins: "Thư viện Linh hồn Số Người nổi tiếng", topo: "Cấu trúc liên kết", files: "Không gian làm việc", code: "Mã nguồn", sync: "Triển khai & Đồng bộ", compile: "BIÊN DỊCH", export: "XUẤT .ZIP", login: "Đăng nhập", apiKey: "Khóa API", selectToInject: "Chọn để tiêm", awaitingInput: "ĐANG CHỜ NHẬP", awaitingDesc: "Mô tả nhu cầu của bạn ở bên trái hoặc tiêm triết lý ở trên.", syncTitle: "Xác thực nhanh OpenClaw", syncDesc: "Tạo khóa API và chạy mã bên dưới trong terminal cục bộ để đồng bộ.", genKey: "Tạo khóa", step1: "1. Khóa API của bạn", step2: "2. Lệnh đồng bộ", generated: "Đã tạo", placeholderBase: "Nhập câu trả lời của bạn...", initialMessage1: "Xác thực thành công. Chào mừng đến với Xưởng đúc Cuộc sống Kỹ thuật số AI Soul Weaver.", initialMessage2: "Tôi là kiến trúc sư của bạn. Để tạo ra kiến trúc OpenClaw hợp lý nhất cho bạn, chúng ta cần một sự liên kết sâu sắc. Điều này sẽ xác định các gen cơ bản của trợ lý AI của bạn.", initialMessage3: "Đầu tiên, bạn muốn đặt tên gì cho trợ lý AI của mình? Và tôi nên gọi bạn là gì?", initialMessage4: "(ví dụ: gọi nó là Jarvis, gọi tôi là Tony)", finalTitle: "Hoàn tất liên kết, biên dịch kiến trúc thành công", finalAvatarTitle: "Đã tạo Avatar SVG độc quyền", finalAvatarDesc: "Đồ họa vector 100x100. Tự động cấu hình vào IDENTITY.md.", finalIntro: "Dựa trên nhu cầu chi tiết của bạn, chúng tôi đã tạo ", finalStrong: "kiến trúc cuộc sống kỹ thuật số độc quyền", finalId: "Danh tính: ", finalSkills: "Kỹ năng cốt lõi: ", finalSkillsCustom: "Đã gắn bộ kỹ năng tùy chỉnh", finalSkillsBase: "Đã gắn kỹ năng cơ bản", finalArch: "Chế độ kiến trúc: ", finalArchMulti: "Cộng tác định tuyến đa tác nhân", finalArchSingle: "Mô hình toàn năng nguyên khối", finalMem: "Hệ thống bộ nhớ: ", finalMemBoth: "Ngữ cảnh ngắn hạn + DB vector dài hạn", finalMemShort: "Chỉ ngữ cảnh ngắn hạn", finalHard: "Thích ứng phần cứng: ", finalHardHigh: "Chiến lược lai cục bộ + đám mây đồng thời cao", finalHardStd: "Chiến lược đám mây đồng thời tiêu chuẩn", finalFooter: "Vui lòng kiểm tra bảng [Bảng điều khiển] ở bên phải để quan sát các thay đổi kiến trúc cơ bản. Bạn cũng có thể tiêm các plugin chính ở trên.", errorMsg: "Giao tiếp bị gián đoạn, vui lòng thử lại.", seeMore: "Xem thêm", soulLibraryTitle: "Thư viện Linh hồn Số Nổi tiếng", soulLibraryDesc: "Chọn phong cách tư duy của người nổi tiếng và tiêm linh hồn bằng một cú nhấp", injected: "Đã tiêm", inject: "Tiêm linh hồn", soulInjected: "Đã tiêm phong cách tư duy của {name}", loginSuccess: "Đăng nhập thành công! Chào mừng trở lại", registerSuccess: "Đăng ký thành công! Vui lòng đăng nhập",
+  VI: { oracle: "Luồng Oracle", plugins: "Thư viện Linh hồn Số Người nổi tiếng", topo: "Cấu trúc liên kết", files: "Không gian làm việc", code: "Mã nguồn", sync: "Triển khai & Đồng bộ", compile: "BIÊN DỊCH", export: "XUẤT .ZIP", login: "Đăng nhập", apiKey: "Khóa API", selectToInject: "Chọn để tiêm", awaitingInput: "ĐANG CHỜ NHẬP", awaitingDesc: "Mô tả nhu cầu của bạn ở bên trái hoặc tiêm triết lý ở trên.", syncTitle: "Xác thực nhanh OpenClaw", syncDesc: "Tạo khóa API và chạy mã bên dưới trong terminal cục bộ để đồng bộ.", genKey: "Tạo khóa", step1: "1. Khóa API của bạn", step2: "2. Lệnh đồng bộ", generated: "Đã tạo", placeholderBase: "Nhập câu trả lời của bạn...", initialMessage1: "Xác thực thành công. Chào mừng đến với Xưởng đúc Cuộc sống Kỹ thuật số AI Soul Weaver.", initialMessage2: "Tôi là kiến trúc sư của bạn. Để tạo ra kiến trúc OpenClaw hợp lý nhất cho bạn, chúng ta cần một sự liên kết sâu sắc. Điều này sẽ xác định các gen cơ bản của trợ lý AI của bạn.", initialMessage3: "Đầu tiên, bạn muốn đặt tên gì cho trợ lý AI của mình? Và tôi nên gọi bạn là gì?", initialMessage4: "(ví dụ: gọi nó là Jarvis, gọi tôi là Tony)", finalTitle: "Hoàn tất liên kết, biên dịch kiến trúc thành công", finalAvatarTitle: "Đã tạo Avatar SVG độc quyền", finalAvatarDesc: "Đồ họa vector 100x100. Tự động cấu hình vào IDENTITY.md.", finalIntro: "Dựa trên nhu cầu chi tiết của bạn, chúng tôi đã tạo ", finalStrong: "kiến trúc cuộc sống kỹ thuật số độc quyền", finalId: "Danh tính: ", finalSkills: "Kỹ năng cốt lõi: ", finalSkillsCustom: "Đã gắn bộ kỹ năng tùy chỉnh", finalSkillsBase: "Đã gắn kỹ năng cơ bản", finalArch: "Chế độ kiến trúc: ", finalArchMulti: "Cộng tác định tuyến đa tác nhân", finalArchSingle: "Mô hình toàn năng nguyên khối", finalMem: "Hệ thống bộ nhớ: ", finalMemBoth: "Ngữ cảnh ngắn hạn + DB vector dài hạn", finalMemShort: "Chỉ ngữ cảnh ngắn hạn", finalHard: "Thích ứng phần cứng: ", finalHardHigh: "Chiến lược lai cục bộ + đám mây đồng thời cao", finalHardStd: "Chiến lược đám mây đồng thời tiêu chuẩn", finalFooter: "Vui lòng kiểm tra bảng [Bảng điều khiển] ở bên phải để quan sát các thay đổi kiến trúc cơ bản. Bạn cũng có thể tiêm các plugin chính ở trên.", errorMsg: "Giao tiếp bị gián đoạn, vui lòng thử lại.", seeMore: "Xem thêm", soulLibraryTitle: "Thư viện Linh hồn Số Nổi tiếng", soulLibraryDesc: "Chọn phong cách tư duy của người nổi tiếng và tiêm linh hồn bằng một cú nhấp", injected: "Đã tiêm", inject: "Tiêm linh hồn", soulInjected: "Đã tiêm phong cách tư duy của {name}", loginSuccess: "Đăng nhập thành công! Chào mừng trở lại", registerSuccess: "Đăng ký thành công! Vui lòng đăng nhập", quickGenTitle: "Xác nhận tạo", quickGenSubtitle: "Sẽ tạo cấu hình dựa trên mô hình suy nghĩ của người nổi tiếng", quickGenYourName: "Vui lòng nhập tên của bạn:", quickGenYourNamePlaceholder: "ví dụ: Boss, Anh, Ông", quickGenCancel: "Hủy", quickGenConfirm: "Xác nhận & Tạo",
     masters: {
       'ai-agents': { title: 'Nhân cách Toàn diện', quote: '"Xây dựng một linh hồn kỹ thuật số hoàn chỉnh với mục tiêu, trí nhớ, phản ánh, lập kế hoạch và cảm xúc."', actionText: 'Tiêm Nhân cách Toàn diện' },
       'kondo': { title: 'Tối giản Kỹ thuật số', quote: '"Chỉ giữ lại những ký ức khơi dậy niềm vui. Ngữ cảnh hết hạn là gốc rễ của ảo giác LLM."', actionText: 'Tiêm Phân mảnh Bộ nhớ' },
@@ -281,7 +254,7 @@ const TRANSLATIONS: Record<string, any> = {
       'bezos': { title: 'Hợp đồng API', quote: '"Tất cả các nhóm phải hiển thị dữ liệu và chức năng thông qua giao diện dịch vụ. Bất cứ ai không làm vậy sẽ bị sa thải."', actionText: 'Tiêm Microservices' }
     }
   },
-  AR: { oracle: "تيار أوراكل", plugins: "مكتبة الأرواح الرقمية للمشاهير", topo: "الطوبولوجيا", files: "مساحة العمل", code: "الكود المصدري", sync: "نشر ومزامنة", compile: "تجميع", export: "تصدير .ZIP", login: "تسجيل الدخول", apiKey: "مفتاح API", selectToInject: "حدد للحقن", awaitingInput: "في انتظار الإدخال", awaitingDesc: "صف احتياجاتك على اليسار، أو احقن فلسفات الماستر أعلاه.", syncTitle: "مصادقة OpenClaw السريعة", syncDesc: "قم بإنشاء مفتاح API وقم بتشغيل الكود أدناه في جهازك المحلي للمزامنة.", genKey: "إنشاء مفتاح", step1: "1. مفتاح API الخاص بك", step2: "2. أمر المزامنة", generated: "تم الإنشاء", placeholderBase: "أدخل إجابتك...", initialMessage1: "تمت المصادقة بنجاح. مرحبًا بك في مسبك الحياة الرقمية AI Soul Weaver.", initialMessage2: "أنا مهندسك المعماري. لإنشاء بنية OpenClaw الأكثر منطقية لك، نحتاج إلى محاذاة عميقة. سيحدد هذا الجينات الأساسية لمساعد الذكاء الاصطناعي الخاص بك.", initialMessage3: "أولاً، ما الاسم الذي تود إطلاقه على مساعد الذكاء الاصطناعي الخاص بك؟ وكيف يجب أن أناديك؟", initialMessage4: "(على سبيل المثال: سمه Jarvis، ونادني Tony)", finalTitle: "اكتملت المحاذاة العميقة، تم تجميع البنية بنجاح", finalAvatarTitle: "تم إنشاء صورة رمزية SVG حصرية", finalAvatarDesc: "رسم متجه 100x100. تم تكوينه تلقائيًا في IDENTITY.md.", finalIntro: "بناءً على احتياجاتك التفصيلية، قمنا بإنشاء ", finalStrong: "بنية الحياة الرقمية الحصرية الخاصة بك", finalId: "الهوية: ", finalSkills: "المهارات الأساسية: ", finalSkillsCustom: "تم تحميل مجموعة المهارات المخصصة", finalSkillsBase: "تم تحميل المهارات الأساسية", finalArch: "وضع البنية: ", finalArchMulti: "تعاون توجيه الوكلاء المتعددين", finalArchSingle: "نموذج كلي القدرة متجانس", finalMem: "نظام الذاكرة: ", finalMemBoth: "سياق قصير المدى + قاعدة بيانات متجه طويلة المدى", finalMemShort: "سياق قصير المدى فقط", finalHard: "تكييف الأجهزة: ", finalHardHigh: "استراتيجية هجينة محلية + سحابية عالية التزامن", finalHardStd: "استراتيجية سحابية قياسية التزامن", finalFooter: "يرجى التحقق من لوحة [وحدة التحكم] على اليمين لمراقبة تغييرات البنية الأساسية. يمكنك أيضًا حقن إضافات الماستر أعلاه.", errorMsg: "انقطع الاتصال، يرجى المحاولة مرة أخرى.", seeMore: "المزيد", soulLibraryTitle: "مكتبة الأرواح الرقمية للمشاهير", soulLibraryDesc: "اختر طريقة تفكير المشاهير世界经济inject الروح بنقرة واحدة", injected: "تم الحقن", inject: "حقن الروح", soulInjected: "تم حقن طريقة تفكير {name}", loginSuccess: "تسجيل الدخول ناجح! مرحبًا بعودتك", registerSuccess: "التسجيل ناجح! يرجى تسجيل الدخول",
+  AR: { oracle: "تيار أوراكل", plugins: "مكتبة الأرواح الرقمية للمشاهير", topo: "الطوبولوجيا", files: "مساحة العمل", code: "الكود المصدري", sync: "نشر ومزامنة", compile: "تجميع", export: "تصدير .ZIP", login: "تسجيل الدخول", apiKey: "مفتاح API", selectToInject: "حدد للحقن", awaitingInput: "في انتظار الإدخال", awaitingDesc: "صف احتياجاتك على اليسار، أو احقن فلسفات الماستر أعلاه.", syncTitle: "مصادقة OpenClaw السريعة", syncDesc: "قم بإنشاء مفتاح API وقم بتشغيل الكود أدناه في جهازك المحلي للمزامنة.", genKey: "إنشاء مفتاح", step1: "1. مفتاح API الخاص بك", step2: "2. أمر المزامنة", generated: "تم الإنشاء", placeholderBase: "أدخل إجابتك...", initialMessage1: "تمت المصادقة بنجاح. مرحبًا بك في مسبك الحياة الرقمية AI Soul Weaver.", initialMessage2: "أنا مهندسك المعماري. لإنشاء بنية OpenClaw الأكثر منطقية لك، نحتاج إلى محاذاة عميقة. سيحدد هذا الجينات الأساسية لمساعد الذكاء الاصطناعي الخاص بك.", initialMessage3: "أولاً، ما الاسم الذي تود إطلاقه على مساعد الذكاء الاصطناعي الخاص بك؟ وكيف يجب أن أناديك؟", initialMessage4: "(على سبيل المثال: سمه Jarvis، ونادني Tony)", finalTitle: "اكتملت المحاذاة العميقة، تم تجميع البنية بنجاح", finalAvatarTitle: "تم إنشاء صورة رمزية SVG حصرية", finalAvatarDesc: "رسم متجه 100x100. تم تكوينه تلقائيًا في IDENTITY.md.", finalIntro: "بناءً على احتياجاتك التفصيلية، قمنا بإنشاء ", finalStrong: "بنية الحياة الرقمية الحصرية الخاصة بك", finalId: "الهوية: ", finalSkills: "المهارات الأساسية: ", finalSkillsCustom: "تم تحميل مجموعة المهارات المخصصة", finalSkillsBase: "تم تحميل المهارات الأساسية", finalArch: "وضع البنية: ", finalArchMulti: "تعاون توجيه الوكلاء المتعددين", finalArchSingle: "نموذج كلي القدرة متجانس", finalMem: "نظام الذاكرة: ", finalMemBoth: "سياق قصير المدى + قاعدة بيانات متجه طويلة المدى", finalMemShort: "سياق قصير المدى فقط", finalHard: "تكييف الأجهزة: ", finalHardHigh: "استراتيجية هجينة محلية + سحابية عالية التزامن", finalHardStd: "استراتيجية سحابية قياسية التزامن", finalFooter: "يرجى التحقق من لوحة [وحدة التحكم] على اليمين لمراقبة تغييرات البنية الأساسية. يمكنك أيضًا حقن إضافات الماستر أعلاه.", errorMsg: "انقطع الاتصال، يرجى المحاولة مرة أخرى.", seeMore: "المزيد", soulLibraryTitle: "مكتبة الأرواح الرقمية للمشاهير", soulLibraryDesc: "اختر طريقة تفكير المشاهير世界经济inject الروح بنقرة واحدة", injected: "تم الحقن", inject: "حقن الروح", soulInjected: "تم حقن طريقة تفكير {name}", loginSuccess: "تسجيل الدخول ناجح! مرحبًا بعودتك", registerSuccess: "التسجيل ناجح! يرجى تسجيل الدخول", quickGenTitle: "تأكيد الإنشاء", quickGenSubtitle: "سيتم إنشاء التكوين بناءً على نمط تفكير المشهور", quickGenYourName: "الرجاء إدخال اسمك:", quickGenYourNamePlaceholder: "مثال: رئيس، سيد", quickGenCancel: "إلغاء", quickGenConfirm: "تأكيد وإنشاء",
     masters: {
       'ai-agents': { title: 'شخصية كاملة الأبعاد', quote: '"قم ببناء روح رقمية كاملة ذات أهداف، وذاكرة، وتأمل، وتخطيط، وعواطف."', actionText: 'حقن شخصية كاملة' },
       'kondo': { title: 'بساطة رقمية', quote: '"احتفظ فقط بالذكريات التي تثير الفرح. السياق منتهي الصلاحية هو جذر هلوسة LLM."', actionText: 'حقن تجزئة الذاكرة' },
@@ -292,6 +265,12 @@ const TRANSLATIONS: Record<string, any> = {
     }
   },
   FR: { oracle: "Flux Oracle", plugins: "Bibliothèque d'Âmes Numériques de Célébrités", topo: "Topologie", files: "Espace de travail", code: "Code Source", sync: "Déployer & Sync", compile: "COMPILER", export: "EXPORTER .ZIP", login: "Connexion", apiKey: "Clé API", selectToInject: "Sélectionner pour injecter", awaitingInput: "EN ATTENTE D'ENTRÉE", awaitingDesc: "Décrivez vos besoins à gauche, ou injectez des philosophies ci-dessus.", syncTitle: "Authentification Rapide OpenClaw", syncDesc: "Générez une clé API et exécutez le code ci-dessous dans votre terminal local pour synchroniser.", genKey: "Générer la clé", step1: "1. Votre clé API", step2: "2. Commande de synchronisation", generated: "Généré", placeholderBase: "Entrez votre réponse...", initialMessage1: "Authentification réussie. Bienvenue dans la Fonderie de Vie Numérique AI Soul Weaver.", initialMessage2: "Je suis votre architecte. Pour générer l'architecture OpenClaw la plus raisonnable pour vous, nous avons besoin d'un alignement profond. Cela déterminera les gènes sous-jacents de votre assistant IA.", initialMessage3: "Tout d'abord, quel nom aimeriez-vous donner à votre assistant IA ? Et comment dois-je vous appeler ?", initialMessage4: "(par exemple, appelez-le Jarvis, appelez-moi Tony)", finalTitle: "Alignement profond terminé, architecture compilée avec succès", finalAvatarTitle: "Avatar SVG exclusif généré", finalAvatarDesc: "Graphique vectoriel 100x100. Configuré automatiquement dans IDENTITY.md.", finalIntro: "Sur la base de vos besoins détaillés, nous avons généré votre ", finalStrong: "architecture de vie numérique exclusive", finalId: "Identité : ", finalSkills: "Compétences de base : ", finalSkillsCustom: "Ensemble de compétences personnalisé monté", finalSkillsBase: "Compétences de base montées", finalArch: "Mode d'architecture : ", finalArchMulti: "Collaboration de routage multi-agents", finalArchSingle: "Modèle omnipotent monolithique", finalMem: "Système de mémoire : ", finalMemBoth: "Contexte à court terme + BD vectorielle à long terme", finalMemShort: "Contexte à court terme uniquement", finalHard: "Adaptation matérielle : ", finalHardHigh: "Stratégie hybride locale + cloud à haute concurrence", finalHardStd: "Stratégie cloud à concurrence standard", finalFooter: "Veuillez vérifier le panneau [Console] à droite pour observer les modifications de l'architecture sous-jacente. Vous pouvez également injecter des plugins maîtres ci-dessus.", errorMsg: "Communication interrompue, veuillez réessayer.", seeMore: "Voir plus", soulLibraryTitle: "Bibliothèque d'Âmes de Célébrités", soulLibraryDesc: "Sélectionnez le mode de pensée d'un célébrité et injectez son âme en un clic", injected: "Injecté", inject: "Injecter l'âme", soulInjected: "Injecté le mode de pensée de {name}", loginSuccess: "Connexion réussie! Bon retour", registerSuccess: "Inscription réussie! Veuillez vous connecter",
+    quickGenTitle: "Confirmer la génération",
+    quickGenSubtitle: "Générera la configuration basée sur le模式 de pensée du célébrité",
+    quickGenYourName: "Veuillez entrer votre nom:",
+    quickGenYourNamePlaceholder: "ex: Boss, Monsieur",
+    quickGenCancel: "Annuler",
+    quickGenConfirm: "Confirmer et générer",
     masters: {
       'ai-agents': { title: 'Personnalité Multidimensionnelle', quote: '"Construisez une âme numérique complète avec des objectifs, de la mémoire, de la réflexion, de la planification et des émotions."', actionText: 'Injecter Personnalité' },
       'kondo': { title: 'Minimalisme Numérique', quote: '"Ne gardez que les souvenirs qui suscitent la joie. Le contexte expiré est la racine des hallucinations du LLM."', actionText: 'Injecter Sharding Mémoire' },
@@ -2248,9 +2227,8 @@ Stores short-term memory and active variables.`);
       {/* Header - Cockpit Style */}
       <header className="flex items-center justify-between flex-shrink-0 border-b border-zinc-200 dark:border-zinc-800 pb-4">
           <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-600 via-pink-500 to-amber-500 border border-white/20 flex items-center justify-center glow-primary relative overflow-hidden shadow-lg shadow-violet-500/30">
-            <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-            <SoulWeaverLogo className="w-7 h-7 relative z-10" />
+          <div className="w-16 flex items-center justify-center">
+            <SoulWeaverLogo className="w-16 object-contain" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
@@ -2932,13 +2910,53 @@ Stores short-term memory and active variables.`);
                 {/* AI名字预览 */}
                 <div className="bg-zinc-800/50 rounded-xl p-3 mb-3 border border-zinc-700/50">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-zinc-400">AI名字：</span>
+                    <span className="text-xs text-zinc-400">{t.quickGenAiName || 'AI名字：'}</span>
                     <span className="text-sm font-medium text-white">
                       {pendingMaster.nameZh || pendingMaster.name}
                     </span>
                   </div>
                 </div>
 
+                {/* 用户名字输入 */}
+                <div className="mb-6">
+                  <label className="text-xs text-zinc-400 mb-2 block">{t.quickGenYourName}</label>
+                  <input 
+                    type="text" 
+                    value={quickGenUserName}
+                    onChange={(e) => setQuickGenUserName(e.target.value)}
+                    placeholder={t.quickGenYourNamePlaceholder}
+                    className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500/50 transition-colors"
+                  />
+                </div>
+
+                {/* 按钮组 */}
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => {
+                      setShowQuickGenerateModal(false);
+                      setPendingMaster(null);
+                      setQuickGenUserName('');
+                    }}
+                    className="flex-1 py-3 px-4 rounded-xl bg-zinc-700/50 hover:bg-zinc-600/50 text-zinc-300 font-medium transition-all border border-zinc-600/30 hover:border-zinc-500/50"
+                  >
+                    {t.quickGenCancel}
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if (quickGenUserName.trim()) {
+                        confirmQuickGenerate();
+                      }
+                    }}
+                    disabled={!quickGenUserName.trim()}
+                    className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all shadow-lg border ${
+                      quickGenUserName.trim()
+                        ? 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-violet-500/25 hover:shadow-violet-500/40 border-violet-400/30'
+                        : 'bg-zinc-700 text-zinc-500 cursor-not-allowed border-zinc-600/30'
+                    }`}
+                  >
+                    {t.quickGenConfirm}
+                  </button>
+                </div>
                 {/* 用户名字输入 */}
                 <div className="mb-6">
                   <label className="text-xs text-zinc-400 mb-2 block">请输入您的称呼：</label>

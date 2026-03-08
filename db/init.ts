@@ -90,7 +90,7 @@ export async function initializeDemoData(): Promise<void> {
     // Store demo key in environment for development
     process.env.DEMO_API_KEY = 'demo-key-123';
   } catch (error: any) {
-    if (error.message.includes('UNIQUE constraint failed')) {
+    if (error.message.includes('UNIQUE constraint failed') || error.message.includes('Unique constraint failed')) {
       console.log('✓ Demo data already exists');
     } else {
       throw error;
