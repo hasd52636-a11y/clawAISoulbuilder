@@ -1044,33 +1044,32 @@ export default function App() {
         return `${m.role === 'user' ? 'User' : 'Assistant'}: [Complex UI Element]`;
       }).join('\n') + `\nUser: ${currentInput}`;
 
-      const systemInstruction = `You are an AI Setup Assistant (Oracle) for AI Soul Weaver. Your goal is to gather the user's preferences to generate an AI architecture.
-        
-        Current conversation:
-        ${historyText}
-        
-        CRITICAL: You can ONLY ask UP TO 5 questions total. After 5 questions, you MUST set isComplete to true and generate the config.
-        Ask only the most essential questions. Keep it simple!
-        
-        Extract the user's preferences from the conversation and generate the next question to ask the user.
-        After gathering basic info (AI name, user name, skills), set isComplete to true to generate the config.
-        Respond in the user's language (Language code: ${lang}).
-        
-        You MUST return ONLY a valid JSON object with the following structure:
+      const systemInstruction = `You are an AI Setup Assistant for AI Soul Weaver. Generate an AI architecture config.
+
+        CORE QUESTIONS (only ask these, max 3 questions total):
+        1. What do you want to call your AI? (aiName)
+        2. What should I call you? (userName)  
+        3. What field/industry do you work in? (profession = e.g., developer, designer, student, researcher, business, etc.)
+
+        After getting answers to the 3 core questions, set isComplete to true.
+        If user says "generate now" or "直接生成", set isComplete to true immediately.
+        Keep your questions brief - just ask one at a time.
+
+        Language: ${lang === 'ZH' ? 'Chinese' : lang === 'EN' ? 'English' : 'Chinese'}
+
+        Respond in JSON:
         {
-          "aiResponse": "Your next response or question to the user.",
+          "aiResponse": "Your brief question or response",
           "extractedPrefs": {
             "aiName": "string or null",
-            "userName": "string or null",
-            "avatarStyle": "string or null (e.g., cyberpunk, minimalist, anime, realistic)",
-            "profession": "string or null",
-            "skills": ["string"] or null,
-            "tasks": "string or null",
-            "multiAgent": boolean or null,
-            "fileStructure": "string or null (standard, modular, or flat)",
-            "memoryType": "string or null (short or both)",
-            "workLang": "string or null (ZH or EN)",
-            "hardware": "string or null (standard or high)"
+            "userName": "string or null", 
+            "profession": "string or null (e.g., developer, designer, student, researcher, business, marketing, educator)",
+            "avatarStyle": "inferred from profession if null",
+            "skills": "inferred from profession if null",
+            "multiAgent": "inferred: developer/ researcher = true, student/beginner = false",
+            "memoryType": "inferred: researcher/business = both, student = short",
+            "hardware": "inferred: business = standard, developer = high",
+            "workLang": "ZH or EN"
           },
           "isComplete": boolean
         }`;
