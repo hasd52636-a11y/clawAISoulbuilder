@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "profiles": {
+    "zai:default": {
+      "type": "api_key",
+      "provider": "zai",
+      "key": "95e635b202714947a903104808ab6643.DmxvLwF1hQXYHYdi"
+    },
+    "nvidia:default": {
+      "type": "api_key",
+      "provider": "nvidia",
+      "key": "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"
+    },
+    "minimax-portal:default": {
+      "type": "oauth",
+      "provider": "minimax-portal",
+      "access": "sk-cp-iYMmamKw7O2BagwcrzxCChVzATVXPC08YJ1qAuXkjHJCqU3uz_vG3LYOMYKKUAMF76Rgmo1zoU66kBfbjOKr5Is3CistSGmCxEn_GlxV297N6GQVkYCohXw",
+      "refresh": "nFNqTKzZu49r7rXej8wgfmHUobeLZJCt5yzPBXgICBI=",
+      "expires": 1803345257073
+    }
+  },
+  "lastGood": {
+    "zai": "zai:default",
+    "nvidia": "nvidia:default"
+  },
+  "usageStats": {
+    "zai:default": {
+      "lastUsed": 1771813037822,
+      "errorCount": 0,
+      "lastFailureAt": 1771808802804
+    },
+    "nvidia:default": {
+      "lastUsed": 1772951694219,
+      "errorCount": 0,
+      "lastFailureAt": 1772468280300
+    }
+  }
+}

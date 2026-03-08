@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "updatedAt": 1772898360000,
+  "checks": {
+    "memory-sync-daily": {
+      "enabled": true,
+      "lastStatus": "ok",
+      "stale": false,
+      "anomaly": false,
+      "consecutiveErrors": 0,
+      "error": null
+    },
+    "memory-weekly-tidy": {
+      "enabled": false,
+      "lastStatus": "not-found",
+      "hasRun": false,
+      "stale": true,
+      "anomaly": true,
+      "error": "cron job not found in list",
+      "consecutiveErrors": 26
+    }
+  },
+  "last3Snapshots": [
+    {
+      "timestamp": 1772892900000,
+      "results": {
+        "memory-sync-daily": "enabled, lastStatus=ok (consecutiveErrors=0)",
+        "memory-weekly-tidy": "disabled, not found in cron list (consecutiveErrors=25)"
+      }
+    },
+    {
+      "timestamp": 1772898360000,
+      "results": {
+        "memory-sync-daily": "enabled, lastStatus=ok (consecutiveErrors=0)",
+        "memory-weekly-tidy": "disabled, not found in cron list (consecutiveErrors=26)"
+      }
+    },
+    {
+      "timestamp": 1772898660000,
+      "results": {
+        "memory-sync-daily": "enabled, lastStatus=ok (consecutiveErrors=0)",
+        "memory-weekly-tidy": "disabled, not found in cron list (consecutiveErrors=27)"
+      }
+    }
+  ],
+  "consecutiveAnomalies": 27,
+  "confirmedAnomaly": {
+    "timestamp": 1772823300000,
+    "jobs": ["memory-weekly-tidy"],
+    "status": "multiple-errors",
+    "details": "memory-weekly-tidy: job not found for 27 consecutive checks (confirmed anomaly)"
+  }
+}
