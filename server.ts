@@ -414,12 +414,10 @@ async function startServer() {
       fileName: downloadInfo.fileName,
     });
 
-    // Send file
-    res.download(downloadInfo.path, downloadInfo.fileName, (err) => {
-      if (err) {
-        logger.error('Error sending file download', err as Error, { packageId });
-      }
-    });
+    // Send file from buffer
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="${downloadInfo.fileName}"`);
+    res.send(downloadInfo.data);
   }));
 
   // Get download status

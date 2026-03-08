@@ -1,14 +1,12 @@
 /**
  * File Download Service
  * Handles generation and download of agent configuration files
+ * Vercel-compatible version - uses in-memory storage
  */
 
-import fs from 'fs';
-import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import JSZip from 'jszip';
 import { logger } from '../utils/logger.js';
-import { fileCleanupService } from './fileCleanupService.js';
 
 interface FilePackage {
   id: string;
@@ -17,7 +15,8 @@ interface FilePackage {
   agentName: string;
   files: Record<string, string>;
   createdAt: Date;
-  zipPath?: string;
+  zipData?: Buffer;
+  expiresAt: Date;
 }
 
 /**
@@ -26,14 +25,10 @@ interface FilePackage {
  */
 export class FileDownloadService {
   private filePackages: Map<string, FilePackage> = new Map();
-  private readonly TEMP_DIR = path.join(process.env.HOME || process.env.USERPROFILE || '.', '.openclaw', 'temp');
+  private readonly EXPIRY_HOURS = 12;
 
   constructor() {
-    // Ensure temp directory exists
-    if (!fs.existsSync(this.TEMP_DIR)) {
-      fs.mkdirSync(this.TEMP_DIR, { recursive: true });
-      logger.info('Created temp directory for file downloads', { path: this.TEMP_DIR });
-    }
+    logger.info('FileDownloadService initialized (in-memory mode for Vercel)');
   }
 
   /**
@@ -48,22 +43,18 @@ export class FileDownloadService {
     const packageId = uuidv4();
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const zipFileName = `${agentName}-${timestamp}.zip`;
-    const zipPath = path.join(this.TEMP_DIR, zipFileName);
 
     try {
-      // Create ZIP file
       const zip = new JSZip();
 
-      // Add all files to ZIP
       for (const [fileName, content] of Object.entries(files)) {
         zip.file(fileName, content);
       }
 
-      // Write ZIP to disk
-      const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' });
-      fs.writeFileSync(zipPath, zipBuffer);
+      const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
 
-      // Register file package
+      const expiresAt = new Date(Date.now() + this.EXPIRY_HOURS * 60 * 60 * 1000);
+
       const filePackage: FilePackage = {
         id: packageId,
         userId,
@@ -71,20 +62,17 @@ export class FileDownloadService {
         agentName,
         files,
         createdAt: new Date(),
-        zipPath,
+        zipData: zipBuffer,
+        expiresAt,
       };
 
       this.filePackages.set(packageId, filePackage);
-
-      // Register with cleanup service
-      fileCleanupService.registerFile(packageId, zipPath);
 
       logger.info('File package created', {
         packageId,
         userId,
         configId,
         agentName,
-        zipPath,
         fileCount: Object.keys(files).length,
       });
 
@@ -96,7 +84,6 @@ export class FileDownloadService {
       logger.error('Failed to create file package', error as Error, {
         packageId,
         agentName,
-        zipPath,
       });
       throw error;
     }
@@ -106,30 +93,29 @@ export class FileDownloadService {
    * Get file package for download
    */
   getFilePackage(packageId: string): FilePackage | null {
-    return this.filePackages.get(packageId) || null;
+    const pkg = this.filePackages.get(packageId);
+    if (!pkg) return null;
+    
+    if (new Date() > pkg.expiresAt) {
+      this.filePackages.delete(packageId);
+      return null;
+    }
+    
+    return pkg;
   }
 
   /**
-   * Download file package (mark as downloaded)
+   * Download file package
    */
-  downloadFilePackage(packageId: string): { path: string; fileName: string } | null {
-    const filePackage = this.filePackages.get(packageId);
-    if (!filePackage || !filePackage.zipPath) {
+  downloadFilePackage(packageId: string): { data: Buffer; fileName: string } | null {
+    const filePackage = this.getFilePackage(packageId);
+    if (!filePackage || !filePackage.zipData) {
       logger.warn('File package not found for download', { packageId });
       return null;
     }
 
-    // Check if file still exists
-    if (!fs.existsSync(filePackage.zipPath)) {
-      logger.warn('File package file not found on disk', { packageId, path: filePackage.zipPath });
-      this.filePackages.delete(packageId);
-      return null;
-    }
-
-    // Mark as downloaded in cleanup service
-    fileCleanupService.markAsDownloaded(packageId);
-
-    const fileName = path.basename(filePackage.zipPath);
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const fileName = `${filePackage.agentName}-${timestamp}.zip`;
 
     logger.info('File package downloaded', {
       packageId,
@@ -139,7 +125,7 @@ export class FileDownloadService {
     });
 
     return {
-      path: filePackage.zipPath,
+      data: filePackage.zipData,
       fileName,
     };
   }
@@ -154,58 +140,31 @@ export class FileDownloadService {
     timeRemaining: number | null;
     agentName: string | null;
   } | null {
-    const filePackage = this.filePackages.get(packageId);
-    if (!filePackage) {
-      return null;
-    }
+    const filePackage = this.getFilePackage(packageId);
+    if (!filePackage) return null;
 
-    const cleanupStatus = fileCleanupService.getFileStatus(packageId);
-    if (!cleanupStatus) {
-      return null;
-    }
+    const now = new Date();
+    const timeRemaining = filePackage.expiresAt.getTime() - now.getTime();
 
     return {
-      exists: cleanupStatus.exists,
-      downloaded: cleanupStatus.downloaded,
-      expiresAt: cleanupStatus.expiresAt,
-      timeRemaining: cleanupStatus.timeRemaining,
+      exists: true,
+      downloaded: false,
+      expiresAt: filePackage.expiresAt,
+      timeRemaining: timeRemaining > 0 ? timeRemaining : 0,
       agentName: filePackage.agentName,
     };
   }
 
   /**
-   * Get all file packages for a user
+   * Delete expired packages
    */
-  getUserFilePackages(userId: string): FilePackage[] {
-    return Array.from(this.filePackages.values()).filter(pkg => pkg.userId === userId);
-  }
-
-  /**
-   * Delete a file package manually
-   */
-  deleteFilePackage(packageId: string): boolean {
-    const filePackage = this.filePackages.get(packageId);
-    if (!filePackage) {
-      return false;
-    }
-
-    try {
-      if (filePackage.zipPath && fs.existsSync(filePackage.zipPath)) {
-        fs.unlinkSync(filePackage.zipPath);
+  cleanupExpired(): void {
+    const now = new Date();
+    for (const [id, pkg] of this.filePackages.entries()) {
+      if (pkg.expiresAt < now) {
+        this.filePackages.delete(id);
+        logger.info('Expired file package removed', { packageId: id });
       }
-
-      this.filePackages.delete(packageId);
-
-      logger.info('File package deleted manually', {
-        packageId,
-        userId: filePackage.userId,
-        configId: filePackage.configId,
-      });
-
-      return true;
-    } catch (error) {
-      logger.error('Failed to delete file package', error as Error, { packageId });
-      return false;
     }
   }
 
@@ -221,9 +180,8 @@ export class FileDownloadService {
     let count = 0;
 
     for (const filePackage of this.filePackages.values()) {
-      if (filePackage.zipPath && fs.existsSync(filePackage.zipPath)) {
-        const stats = fs.statSync(filePackage.zipPath);
-        totalSize += stats.size;
+      if (filePackage.zipData) {
+        totalSize += filePackage.zipData.length;
         count++;
       }
     }
@@ -233,16 +191,6 @@ export class FileDownloadService {
       totalSize,
       averageSize: count > 0 ? totalSize / count : 0,
     };
-  }
-
-  /**
-   * Clean up all file packages
-   */
-  cleanupAll(): void {
-    for (const packageId of this.filePackages.keys()) {
-      this.deleteFilePackage(packageId);
-    }
-    logger.info('All file packages cleaned up');
   }
 }
 
