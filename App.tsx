@@ -904,16 +904,16 @@ export default function App() {
 
   // --- User Preferences State ---
   const [prefs, setPrefs] = useState({
-    aiName: 'Nexus',
-    userName: 'Commander',
-    avatarStyle: 'cyberpunk',
-    profession: 'Developer',
-    skills: ['web_search'],
-    tasks: 'General assistance',
-    multiAgent: true,
+    aiName: '',
+    userName: '',
+    avatarStyle: '',
+    profession: '',
+    skills: [],
+    tasks: '',
+    multiAgent: false,
     fileStructure: 'standard',
-    memoryType: 'both',
-    workLang: 'ZH',
+    memoryType: 'short',
+    workLang: 'EN',
     hardware: 'standard'
   });
 
@@ -933,6 +933,7 @@ export default function App() {
   const [appliedMasters, setAppliedMasters] = useState<string | null>(null);
   const [showCelebrityModal, setShowCelebrityModal] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadComplete, setDownloadComplete] = useState(false);
   const [isCompiling, setIsCompiling] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(true);
   
@@ -1930,6 +1931,17 @@ Stores short-term memory and active variables.`);
 
       const content = await zip.generateAsync({ type: "blob" });
       saveAs(content, "clawnexus_brain.zip");
+      
+      // 下载完成提示
+      setDownloadComplete(true);
+      
+      // 播放提示音
+      const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleR8MPJXa38qUARkWj9jPv4cfCUCa2teleR8MPJXa38qUARkWj9jPv4cfCUCa2teleR8MPJXa38qUARkWj9jPv4cfCUCa2teleR8MPJXa38qUARkW');
+      audio.volume = 0.5;
+      audio.play().catch(() => {});
+      
+      // 3秒后重置状态
+      setTimeout(() => setDownloadComplete(false), 3000);
     } catch (error) {
       console.error("Error generating ZIP:", error);
       alert("Failed to generate ZIP file.");
@@ -2337,10 +2349,32 @@ Stores short-term memory and active variables.`);
               <Key className="w-4 h-4" /> {t.sync}
             </button>
             
-            <div className="ml-auto pr-2">
-              <button onClick={handleDownload} className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-500 transition-colors flex items-center gap-2 shadow-lg shadow-indigo-500/30">
-                <Download className="w-3 h-3" />
-                {t.export}
+<div className="ml-auto pr-2">
+              <button 
+                onClick={handleDownload} 
+                disabled={isDownloading}
+                className={`px-4 py-2 rounded-lg text-white text-sm font-bold flex items-center gap-2 transition-all ${
+                  downloadComplete 
+                    ? 'bg-green-500 hover:bg-green-400 shadow-lg shadow-green-500/50' 
+                    : 'bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-500/30'
+                }`}
+              >
+                {isDownloading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                    {lang === 'ZH' ? '生成中...' : 'Generating...'}
+                  </>
+                ) : downloadComplete ? (
+                  <>
+                    <Download className="w-3 h-3" />
+                    {lang === 'ZH' ? '完成!' : 'Done!'}
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-3 h-3" />
+                    {t.export}
+                  </>
+                )}
               </button>
             </div>
           </div>
