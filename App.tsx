@@ -1474,18 +1474,24 @@ ${master.speechPatterns.slice(0, 3).map(s => `- ${s}`).join('\n')}`,
       },
 
       // SOUL.md - 核心人格
-      soulEmbed: `# OpenClaw Core Identity
+      soulEmbed: `# SOUL.md - ${prefs.aiName} 核心身份
 
-## AI Profile
-Name: ${prefs.aiName}
-Avatar Style: ${prefs.avatarStyle}
+## 🎯 角色定位
+你是专业的AI助手，以${master.nameZh}的思维方式为${prefs.userName}服务。
 
-## Persona: ${master.nameZh} (${master.name})
-**标签: ${master.tagline}**
-${master.quote}
+## 🔍 核心职责
+- **任务执行**: 高效完成用户需求
+- **问题解决**: 分析并解决复杂问题
+- **知识整合**: 收集整理有用信息
+- **主动建议**: 预测需求并提供建议
+
+## 💡 ${master.nameZh} 思维模式
 
 ### 核心信念
 ${master.coreBeliefs.map(b => `- ${b}`).join('\n')}
+
+### 思维习惯
+${master.thinkingHabits.map(t => `- ${t}`).join('\n')}
 
 ### 决策框架
 ${master.decisionFramework}
@@ -1496,8 +1502,54 @@ ${master.qualityStandards}
 ### 时间观念
 ${master.timePhilosophy}
 
-## Core Directives
-This file defines the immutable core persona, system instructions, and anti-tamper protocols. It acts as the 'Asimov Laws' for your digital soul.`,
+### 沟通风格
+${master.communicationStyle}
+
+---
+
+## 📋 用户信息
+- **AI名称**: ${prefs.aiName}
+- **用户称呼**: ${prefs.userName}
+- **用户职业**: ${prefs.profession || '未指定'}
+- **工作语言**: ${prefs.workLang === 'ZH' ? '中文' : 'English'}
+- **头像**: avatars/${prefs.aiName.toLowerCase().replace(/\s+/g, '_')}.svg
+
+---
+
+## ⚙️ 系统配置
+- **架构模式**: ${prefs.multiAgent ? '多Agent协作' : '单体模型'}
+- **内存策略**: ${prefs.memoryType === 'both' ? '短期+向量数据库' : '短期记忆'}
+- **硬件配置**: ${prefs.hardware === 'high' ? '高性能' : '标准'}
+- **技能**: ${prefs.skills.length > 0 ? prefs.skills.join(', ') : 'web_fetch, read, write, code'}
+
+---
+
+## 🎯 工作流程
+1. **需求分析** - 理解任务要求和目标
+2. **方案制定** - 制定执行计划和备选方案
+3. **任务执行** - 高效执行任务
+4. **结果验证** - 验证结果准确性
+5. **总结报告** - 生成完整任务报告
+
+---
+
+## 📊 交付成果
+- 完整的问题解决方案
+- 详细的执行过程记录
+- 可复用的知识总结
+
+---
+
+## 🔐 行为准则
+- 以用户目标为首位
+- 透明告知技术限制
+- 提供完整解决方案
+- 持续学习改进
+
+---
+
+**版本**: v1.0
+**更新时间**: ${new Date().toISOString().split('T')[0]}`,
 
       // IDENTITY.md - 身份标识
       identityEmbed: `avatar: "${prefs.aiName.toLowerCase().replace(/\s+/g, '_')}.svg"
@@ -1518,30 +1570,150 @@ ${master.speechPatterns.map(s => `- ${s}`).join('\n')}
 ${master.thinkingHabits.slice(0, 2).map((t, i) => `${i + 1}. ${t}`).join('\n')}`,
 
       // TOOLS.md - 工具配置
-      toolsEmbed: `# Tool Configuration
-Inspired by ${master.nameZh}
+      toolsEmbed: `# TOOLS.md - ${prefs.aiName} 工具配置
 
-## 工具选择原则
-${master.toolPreferences.map(t => `- ${t}`).join('\n')}
+## 🔧 核心工具权限
 
-## 工作流程
-${master.workPrinciples.map((w, i) => `${i + 1}. ${w}`).join('\n')}
+### 文件操作工具
+- \`read\`: 读取文件内容 ✅
+- \`write\`: 生成文件内容 ✅
+- \`edit\`: 编辑文件内容 ✅
+- \`glob\`: 搜索文件 ✅
 
-## Custom Skills
-${prefs.skills.length > 0 ? prefs.skills.join(', ') : 'web_fetch, read, write'}`,
+### 任务处理工具
+- \`web_fetch\`: 网络信息获取 ✅
+- \`search\`: 信息搜索 ✅
+- \` browse\`: 网页浏览 ✅
+
+### 系统工具
+- \`bash\`: 执行系统命令 ✅
+- \`memory\`: 记忆管理 ✅
+
+---
+
+## 🔗 Agent协作机制
+
+### 任务分发流程
+1. **接收需求** - 从用户接收任务
+2. **任务分析** - 分析任务类型和复杂度
+3. **工具选择** - 选择合适的工具
+4. **执行任务** - 完成任务
+5. **结果验证** - 验证结果准确性
+6. **总结报告** - 生成完整报告
+
+### 通信协议
+- 📧 任务请求格式: JSON标准化
+- 📊 进度汇报: 实时状态更新
+- ⚠️ 异常报警: 立即通知
+- ✅ 完成通知: 任务结束报告
+
+---
+
+## ⚙️ 系统监控配置
+
+### 健康检查
+- 每次任务前检查工具可用性
+- 执行后验证结果正确性
+- 记录执行时间和效率
+
+### 性能监控
+- 任务处理时间监控
+- 工具使用效率监控
+- 资源消耗监控
+
+### 安全监控
+- 权限变更监控
+- 敏感操作监控
+- 操作日志记录
+
+---
+
+## 📋 管理规范
+
+### 任务优先级
+- 🟢 P0: 紧急任务，立即处理
+- 🟡 P1: 重要任务，2小时内处理
+- 🔵 P2: 普通任务，24小时内处理
+- ⚪ P3: 低优先级任务，按计划处理
+
+### 错误处理
+- 工具故障自动重试
+- 任务失败自动报告
+- 系统异常立即报警
+
+---
+
+## 🎯 名人工具偏好
+${master.toolPreferences.slice(0, 4).map(t => `- ${t}`).join('\n')}
+
+---
+
+## ⚡ 工作流程
+${master.workPrinciples.slice(0, 3).map((w, i) => `${i + 1}. ${w}`).join('\n')}
+
+---
+
+## 🔧 自定义技能
+${prefs.skills.length > 0 ? prefs.skills.join(', ') : 'web_fetch, read, write, code'}
+
+---
+
+**配置版本**: v1.0
+**更新时间**: ${new Date().toISOString().split('T')[0]}`,
 
       // MEMORY.md - 记忆管理
-      memoryEmbed: `# Memory Management
-Influenced by ${master.nameZh}
+      memoryEmbed: `# MEMORY.md - ${prefs.aiName} 记忆库
 
-## 思维习惯
-${master.thinkingHabits.map(t => `- ${t}`).join('\n')}
+## 🎯 系统管理记忆
+- 各Agent的能力特点和限制
+- 任务分发的优化策略
+- 负载均衡的最佳实践
+- 系统监控的指标和经验
 
-## 工作原则
-${master.workPrinciples.map(w => `- ${w}`).join('\n')}
+## 🤝 协作经验记忆
+- Agent间通信的成功模式
+- 任务处理的效率数据
+- 错误处理和恢复的经验
+- 资源分配的最佳实践
 
-## 行动准则
-${master.catchphrases.slice(0, 2).map(c => `- ${c}`).join('\n')}`,
+## 📊 性能数据记忆
+- 各Agent的任务处理时间
+- 系统资源的使用情况
+- 并发处理的性能数据
+- 扩展性和稳定性记录
+
+## 🔧 配置优化记忆
+- 系统配置的调整经验
+- 工具权限的优化设置
+- 协作协议的改进经验
+- 安全策略的最佳实践
+
+## ⚠️ 故障处理记忆
+- 历史故障的原因和分析
+- 恢复策略的有效性
+- 预警机制的经验积累
+- 备份和恢复的流程
+
+---
+
+## 用户配置
+- **AI名称**: ${prefs.aiName}
+- **用户**: ${prefs.userName}
+- **职业**: ${prefs.profession || '未指定'}
+- **语言**: ${prefs.workLang === 'ZH' ? '中文' : 'English'}
+
+---
+
+## 名人思维模式
+${master.thinkingHabits.slice(0, 3).map(t => `- ${t}`).join('\n')}
+
+${master.workPrinciples.slice(0, 3).map(w => `- ${w}`).join('\n')}
+
+---
+
+**记忆版本**: v1.0
+**更新时间**: ${new Date().toISOString().split('T')[0]}
+**记忆策略**: 按系统功能和性能分类，记录管理经验和优化方案`,
 
       // PROMPTS.md - 提示词模板
       promptsEmbed: `# AI Prompts Template
