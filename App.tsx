@@ -971,6 +971,8 @@ export default function App() {
   // Authentication states
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showQuickGenerateModal, setShowQuickGenerateModal] = useState(false);
+  const [pendingMaster, setPendingMaster] = useState<typeof MASTERS[0] | null>(null);
   const [notification, setNotification] = useState<{type: 'success' | 'info', message: string} | null>(null);
   
   // Language dropdown state
@@ -1243,6 +1245,17 @@ ${lang === 'ZH' ? '你必须使用中文回复用户' : lang === 'EN' ? 'You mus
       return;
     }
     
+    // 显示确认弹窗
+    setPendingMaster(master);
+    setShowQuickGenerateModal(true);
+  };
+
+  // 确认快速生成
+  const confirmQuickGenerate = () => {
+    if (!pendingMaster) return;
+    
+    const master = pendingMaster;
+    setShowQuickGenerateModal(false);
     setAppliedMasters(master.id);
     
     // Show notification
@@ -2832,6 +2845,103 @@ Stores short-term memory and active variables.`);
           setTimeout(() => setNotification(null), 3000);
         }}
       />
+
+      {/* 快速生成确认弹窗 */}
+      {showQuickGenerateModal && pendingMaster && (
+        <>
+          {/* 遮罩层 */}
+          <div 
+            className="fixed inset-0 bg-black/70 z-50 backdrop-blur-sm"
+            onClick={() => {
+              setShowQuickGenerateModal(false);
+              setPendingMaster(null);
+            }}
+          />
+          {/* 弹窗主体 */}
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md z-50">
+            <div className="bg-gradient-to-br from-zinc-800 via-zinc-900 to-zinc-800 rounded-3xl border border-zinc-600/50 shadow-2xl overflow-hidden">
+              {/* 装饰性顶部 */}
+              <div className="h-2 bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500" />
+              
+              {/* 弹窗内容 */}
+              <div className="p-6">
+                {/* 标题 */}
+                <div className="text-center mb-6">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/30 mb-3">
+                    <Zap className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">确认生成配置</h3>
+                  <p className="text-sm text-zinc-400 mt-1">将基于以下名人思维生成配置</p>
+                </div>
+
+                {/* 名人信息卡片 */}
+                <div className="bg-gradient-to-br from-zinc-700/50 to-zinc-800/50 rounded-2xl p-4 border border-zinc-600/30 mb-6">
+                  <div className="flex items-center gap-4">
+                    {/* 头像 */}
+                    <div className="relative">
+                      <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-violet-500/50 shadow-lg">
+                        <img 
+                          src={pendingMaster.avatar} 
+                          alt={pendingMaster.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className={`absolute -bottom-1 -right-1 w-7 h-7 rounded-lg bg-gradient-to-br ${pendingMaster.color} border-2 border-zinc-800 flex items-center justify-center`}>
+                        {pendingMaster.icon}
+                      </div>
+                    </div>
+                    
+                    {/* 信息 */}
+                    <div className="flex-1">
+                      <h4 className="text-lg font-bold text-white">
+                        {pendingMaster.nameZh || pendingMaster.name}
+                      </h4>
+                      <p className="text-sm text-violet-300">
+                        {pendingMaster.tagline}
+                      </p>
+                      <p className="text-xs text-zinc-400 mt-1">
+                        {pendingMaster.title}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* AI名字预览 */}
+                <div className="bg-zinc-800/50 rounded-xl p-3 mb-6 border border-zinc-700/50">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-zinc-400">AI名字：</span>
+                    <span className="text-sm font-medium text-white">
+                      {pendingMaster.nameZh || pendingMaster.name}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 按钮组 */}
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => {
+                      setShowQuickGenerateModal(false);
+                      setPendingMaster(null);
+                    }}
+                    className="flex-1 py-3 px-4 rounded-xl bg-zinc-700/50 hover:bg-zinc-600/50 text-zinc-300 font-medium transition-all border border-zinc-600/30 hover:border-zinc-500/50"
+                  >
+                    取消
+                  </button>
+                  <button 
+                    onClick={confirmQuickGenerate}
+                    className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium transition-all shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 border border-violet-400/30"
+                  >
+                    确认生成
+                  </button>
+                </div>
+              </div>
+
+              {/* 装饰性底部 */}
+              <div className="h-1 bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500" />
+            </div>
+          </div>
+        </>
+      )}
 
       {/* 名人数字灵魂库弹窗 */}
       {showCelebrityModal && (
